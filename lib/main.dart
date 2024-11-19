@@ -764,29 +764,6 @@ class HomeFrame extends StatelessWidget {
 class EmptyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // List of 20 different car names
-    List<String> carNames = [
-      'Toyota Camry',
-      'Honda Accord',
-      'Ford Mustang',
-      'Chevrolet Camaro',
-      'BMW 3 Series',
-      'Mercedes-Benz C-Class',
-      'Audi A4',
-      'Tesla Model S',
-      'Lexus ES',
-      'Nissan Altima',
-      'Hyundai Sonata',
-      'Mazda 6',
-      'Subaru Outback',
-      'Kia Optima',
-      'Volkswagen Passat',
-      'Volvo S60',
-      'Jaguar XE',
-      'Alfa Romeo Giulia',
-      'Porsche 911',
-      'Ferrari 488'
-    ];
     return Scaffold(
       body: Center(
         child: Container(
@@ -810,7 +787,7 @@ class EmptyPage extends StatelessWidget {
               ),
               // Transparent column with icon and text at x: 20, y: 107
               Positioned(
-                left: 20,
+                left: 60,
                 top: 80,
                 child: Container(
                   width: 280,
@@ -853,61 +830,7 @@ class EmptyPage extends StatelessWidget {
                   ),
                 ),
               ),
-              // Notification icon on the right side
-              Positioned(
-                right: 20,
-                top: 80,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.notifications,
-                    size: 30,
-                    color: Colors.black, // Notification icon color
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => NotifikasiPage()),
-                    );
-                  },
-                ),
-              ),
-              // Search bar below user info
-              Positioned(
-                left: 20,
-                top: 135,
-                child: Container(
-                  width: 320,
-                  height: 49,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300, // Light grey color
-                    borderRadius: BorderRadius.circular(15), // Rounded corners
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 8),
-                      Icon(Icons.search, size: 25, color: Colors.black),
-                      SizedBox(width: 10),
-                      Text(
-                        'Mobil Offroad Terdekat',
-                        style: TextStyle(fontSize: 14, color: Colors.grey[400]),
-                      ),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.filter_list,
-                            size: 30, color: Colors.black),
-                        onPressed: () {
-                          _showFilterDialog(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Search()),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // "Populer" text below the search bar
+
               Positioned(
                 left: 35,
                 top: 185,
@@ -931,15 +854,6 @@ class EmptyPage extends StatelessWidget {
                     child: Column(
                       children: List.generate(20, (index) {
                         return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    OrderPage(kendaraan: carNames[index]),
-                              ),
-                            );
-                          },
                           child: Container(
                             width: 321,
                             height: 227,
@@ -993,21 +907,35 @@ class EmptyPage extends StatelessWidget {
                                           ),
                                         ],
                                       ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Icon(Icons.star,
-                                              color: Colors.yellow[700],
-                                              size: 20),
-                                          SizedBox(height: 4),
-                                          Text(
-                                            '${(index % 5) + 1} / 5',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black),
+                                      PopupMenuButton<String>(
+                                        onSelected: (value) {
+                                          // Tambahkan aksi berdasarkan pilihan
+                                          if (value == 'edit') {
+                                            print('Edit item ${index + 1}');
+                                            // Navigasi ke halaman edit atau tampilkan dialog
+                                          } else if (value == 'delete') {
+                                            print('Hapus item ${index + 1}');
+                                            // Logika untuk menghapus item
+                                          } else if (value == 'add') {
+                                            print('Tambah item baru');
+                                            // Logika untuk menambah item baru
+                                          }
+                                        },
+                                        itemBuilder: (context) => [
+                                          PopupMenuItem(
+                                            value: 'edit',
+                                            child: Text('Edit'),
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'delete',
+                                            child: Text('Hapus'),
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'add',
+                                            child: Text('Tambah'),
                                           ),
                                         ],
+                                        child: Icon(Icons.more_vert),
                                       ),
                                     ],
                                   ),
@@ -1030,6 +958,7 @@ class EmptyPage extends StatelessWidget {
                   ),
                 ),
               ),
+
               // Bottom navigation bar
               Positioned(
                 bottom: 0,
@@ -1063,23 +992,30 @@ class EmptyPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.search, color: Colors.grey),
+                        icon: Icon(Icons.add_box, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SearchPage()));
+                                  builder: (context) => AddPage()));
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.favorite, color: Colors.grey),
+                        icon: Icon(Icons.chat_bubble, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RiwayatChatPage()));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.history, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => FavoritePage(
-                                  favoriteNameState: 'VehicleName'),
-                            ),
+                                builder: (context) => RiwayatPemesananPage()),
                           );
                         },
                       ),
@@ -1166,1439 +1102,6 @@ class EmptyPage extends StatelessWidget {
         style: TextStyle(
           fontSize: 12,
           color: Colors.black,
-        ),
-      ),
-    );
-  }
-}
-
-class Search extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: EmptyPage(),
-    );
-  }
-}
-
-class SearchPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          width: 360,
-          height: 800,
-          color: Colors.white, // Frame with white color
-          child: Stack(
-            children: [
-              // Text "WheelsUp" at x: 127, y: 63
-              Positioned(
-                left: 127,
-                top: 30,
-                child: Text(
-                  'WheelsUp',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black, // Text color
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 20.0, // x coordinate
-                top: 25.0, // y coordinate
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back, // Icon for going back
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            HomeFrame(), // Pass the correct kendaraan value
-                      ),
-                    );
-                  },
-                ),
-              ),
-              // Transparent column with icon and text at x: 20, y: 107
-              Positioned(
-                left: 20,
-                top: 80,
-                child: Container(
-                  width: 280,
-                  height: 49,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent, // Transparent color
-                    borderRadius: BorderRadius.circular(15), // Rounded corners
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.account_circle,
-                        size: 40,
-                        color: Colors.black, // Icon color
-                      ),
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Halo!',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black, // Text color
-                            ),
-                          ),
-                          Text(
-                            'Username',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black, // Text color
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // Notification icon on the right side
-              Positioned(
-                right: 20,
-                top: 80,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.notifications,
-                    size: 30,
-                    color: Colors.black, // Notification icon color
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => NotifikasiPage()),
-                    );
-                  },
-                ),
-              ),
-              // Search bar below user info
-              Positioned(
-                left: 20,
-                top: 135,
-                child: Container(
-                  width: 320,
-                  height: 49,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300, // Light grey color
-                    borderRadius: BorderRadius.circular(15), // Rounded corners
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 8),
-                      Icon(Icons.search, size: 25, color: Colors.black),
-                      SizedBox(width: 10),
-                      Text(
-                        'Mobil Offroad Terdekat',
-                        style: TextStyle(fontSize: 14, color: Colors.grey[400]),
-                      ),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.filter_list,
-                            size: 30, color: Colors.black),
-                        onPressed: () {
-                          _showFilterDialog(context);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // "Populer" text below the search bar
-              Positioned(
-                left: 35,
-                top: 185,
-                child: Text(
-                  'Populer',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              // Scrollable list below "Populer" text
-              Positioned(
-                left: 0,
-                top: 210,
-                child: Container(
-                  width: 360,
-                  height: 550,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: List.generate(20, (index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OrderPage(
-                                    kendaraan: 'Kendaraan ${index + 1}'),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            width: 321,
-                            height: 227,
-                            margin: EdgeInsets.symmetric(vertical: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.blueGrey[100],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 320,
-                                  height: 135,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(10),
-                                    ),
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          'https://via.placeholder.com/320x135'),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Kendaraan ${index + 1}',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Harga: Rp. ${(index + 1) * 100000}',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Icon(Icons.star,
-                                              color: Colors.yellow[700],
-                                              size: 20),
-                                          SizedBox(height: 4),
-                                          Text(
-                                            '${(index % 5) + 1} / 5',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 4.0),
-                                  child: Text(
-                                    'Lokasi: Lokasi ${index + 1}',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.grey[700]),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-                ),
-              ),
-              // Bottom navigation bar
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: Container(
-                  width: 360,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.home, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeFrame()));
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.search, color: Colors.black),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchPage()));
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.favorite, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => FavoritePage(
-                                  favoriteNameState: 'VehicleName'),
-                            ),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.account_circle, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProfilPage()));
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-// Method to show filter dialog
-  void _showFilterDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Filter Options'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        _buildFilterColumn('Murah'),
-                        _buildFilterColumn('Terjamin'),
-                        _buildFilterColumn('Nyaman'),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        _buildFilterColumn('Berkualitas'),
-                        _buildFilterColumn('Aman'),
-                        _buildFilterColumn('Terdekat'),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: Text('Apply Filters'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-// Helper method to create filter columns
-  Widget _buildFilterColumn(String label) {
-    return Container(
-      width: 90,
-      height: 30,
-      margin:
-          EdgeInsets.only(bottom: 8), // Menambahkan jarak antara kolom filter
-      decoration: BoxDecoration(
-        color: Colors.blueGrey[100], // Background color
-        borderRadius: BorderRadius.circular(8), // Rounded corners
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 12,
-          color: Colors.black,
-        ),
-      ),
-    );
-  }
-}
-
-class FavoritePage extends StatelessWidget {
-  final String favoriteNameState;
-
-  FavoritePage({required this.favoriteNameState});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          width: 360,
-          height: 800,
-          color: Colors.white,
-          child: Stack(
-            children: [
-              Positioned(
-                left: 127,
-                top: 30,
-                child: Text(
-                  'WheelsUp',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 20.0, // x coordinate
-                top: 25.0, // y coordinate
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(
-                        context); // Pop to go back to the previous page
-                  },
-                ),
-              ),
-
-              Positioned(
-                left: 20,
-                top: 80,
-                child: Text(
-                  'Your Favorite Vehicle:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Positioned(
-                left: 20,
-                top: 110,
-                child: Text(
-                  favoriteNameState, // Display the favorite name here
-                  style: TextStyle(fontSize: 24, color: Colors.black),
-                ),
-              ),
-              // Notification icon on the right side
-              Positioned(
-                right: 20,
-                top: 80,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.favorite,
-                    size: 30,
-                    color: Colors.black, // Notification icon color
-                  ),
-                  onPressed: () {
-                    Navigator.pop(
-                        context); // Pop to go back to the previous page
-                  },
-                ),
-              ),
-              Positioned(
-                left: 20,
-                top: 210,
-                child: Container(
-                  width: 320,
-                  height: 227,
-                  margin: EdgeInsets.symmetric(vertical: 5),
-                  decoration: BoxDecoration(
-                    color: Colors.blueGrey[100],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              // Bottom Navigation Bar
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: Container(
-                  width: 360,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.home, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeFrame()));
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.search, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchPage()));
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.favorite, color: Colors.black),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => FavoritePage(
-                                  favoriteNameState: 'VehicleName'),
-                            ),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.account_circle, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProfilPage()));
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class OrderPage extends StatefulWidget {
-  final String kendaraan;
-
-  OrderPage({required this.kendaraan});
-
-  @override
-  _OrderPageState createState() => _OrderPageState();
-}
-
-class _OrderPageState extends State<OrderPage> {
-  bool isFavorited = false; // Variabel untuk mengatur status favorit
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          width: 360,
-          height: 800,
-          color: Colors.white, // Frame dengan warna putih
-          child: Stack(
-            children: [
-              // Text "WheelsUp" di posisi x: 127, y: 63
-              Positioned(
-                left: 127, // Posisi x: 127
-                top: 25, // Posisi y: 63
-                child: Text(
-                  'WheelsUp',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black, // Warna teks hitam
-                  ),
-                ),
-              ),
-              // Kolom transparan berisi icon dan text di posisi x: 20, y: 107
-              Positioned(
-                left: 20.0, // x coordinate
-                top: 25.0, // y coordinate
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back, // Icon for going back
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            HomeFrame(), // Pass the correct kendaraan value
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Positioned(
-                left: 20, // Posisi x: 20
-                top: 75, // Posisi y: 107
-                child: Container(
-                  width: 280,
-                  height: 49,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent, // Warna transparan
-                    borderRadius: BorderRadius.circular(15), // Radius 15
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.account_circle,
-                        size: 40,
-                        color: Colors.black, // Warna ikon
-                      ),
-                      SizedBox(width: 10), // Jarak antara ikon dan teks
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Halo!',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black, // Warna teks
-                            ),
-                          ),
-                          Text(
-                            'Username',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black, // Warna teks
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // Ikon favorit yang bisa berubah warna
-              Positioned(
-                right: 20, // Posisikan di sisi kanan
-                top: 80,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.favorite,
-                    size: 30,
-                    color: isFavorited
-                        ? Colors.red
-                        : Colors.grey, // Jika di-klik jadi merah
-                  ),
-                  onPressed: () {
-                    // Ubah status favorit
-                    setState(() {
-                      isFavorited = !isFavorited; // Toggle status
-                    });
-                  },
-                ),
-              ),
-              // Kolom besar utama dengan ukuran w: 321, h: 528
-              Positioned(
-                left: 20, // Posisi x: 20
-                top: 125, // Posisi y di bawah ikon favorit
-                child: Container(
-                  width: 320,
-                  height: 515,
-                  decoration: BoxDecoration(
-                    color: Colors
-                        .blueGrey[100], // Background warna abu-abu biru muda
-                    borderRadius: BorderRadius.circular(15), // Radius sudut 15
-                  ),
-                  child: Stack(children: [
-                    // Kolom 1 - Gambar kendaraan
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      child: Container(
-                        width: 320,
-                        height: 245,
-                        decoration: BoxDecoration(
-                          color: Colors
-                              .grey[300], // Warna placeholder untuk gambar
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Ini untuk gambar kendaraan',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Kolom 2 - Nama Kendaraan
-                    Positioned(
-                      top: 245,
-                      left: 0,
-                      child: Container(
-                        width: 170,
-                        height: 25,
-                        color: Colors.transparent,
-                        child: Text(
-                          'Nama Kendaraan',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Kolom 3 - Icon Rating
-                    Positioned(
-                      top: 245,
-                      right: 0,
-                      child: Container(
-                        width: 83,
-                        height: 18,
-                        color: Colors.transparent,
-                        child: Icon(
-                          Icons.star, // Placeholder icon rating
-                          color: Colors.yellow,
-                          size: 18,
-                        ),
-                      ),
-                    ),
-                    // Kolom 4 - Harga
-                    Positioned(
-                      top: 270,
-                      left: 0,
-                      child: Container(
-                        width: 106,
-                        height: 18,
-                        color: Colors.transparent,
-                        child: Text(
-                          'Harga',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Kolom 5 - Fasilitas
-                    Positioned(
-                      top: 295,
-                      left: 0,
-                      child: Container(
-                        width: 110,
-                        height: 100,
-                        color: Colors.transparent,
-                        child: Text(
-                          'Fasilitas',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Kolom 6 - Syarat Peminjaman
-                    Positioned(
-                      top: 295,
-                      right: 0,
-                      child: Container(
-                        width: 110,
-                        height: 100,
-                        color: Colors.transparent,
-                        child: Text(
-                          'Syarat Peminjaman',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Kolom 7 - Lokasi
-                    Positioned(
-                      top: 385,
-                      left: 0,
-                      child: Container(
-                        width: 140,
-                        height: 20,
-                        color: Colors.transparent,
-                        child: Text(
-                          'Lokasi',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      top: 400.0,
-                      child: Text(
-                        "Owner",
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    // Kolom 8 - Kontak
-                    Positioned(
-                      top: 460,
-                      left: 10.5,
-                      child: Container(
-                        width: 301,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Icon Account Circle
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5),
-                                child: Icon(
-                                  Icons.account_circle,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                              ),
-                              // Column for Name and Bank Account Number
-                              Expanded(
-                                child: Container(
-                                  width: 301,
-                                  height: 100,
-                                  padding: EdgeInsets.symmetric(horizontal: 8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Colors.grey),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.account_circle,
-                                          size: 24, color: Colors.blue),
-                                      SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          'Nama - 123456789',
-                                          style: TextStyle(fontSize: 16),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      Icon(Icons.local_phone,
-                                          size: 24, color: Colors.green),
-                                      SizedBox(width: 8),
-                                      Icon(Icons.chat_bubble,
-                                          size: 24, color: Colors.orange),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ]),
-                      ),
-                    ),
-                  ]),
-                ),
-              ),
-              // Kolom baru dengan ukuran w: 360, h: 108
-              Positioned(
-                left: 0,
-                bottom: 0, // Tempatkan di bagian bawah frame
-                child: Container(
-                  width: 360,
-                  height: 90,
-                  decoration: BoxDecoration(
-                    color: Colors.white, // Warna background putih
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3), // Shadow untuk memberi efek
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      // Kolom 1 - Harga
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Harga',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Text(
-                            'Rp. 500.000,-',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Arahkan pengguna langsung ke halaman SyaratPage setelah tombol "Pesan" ditekan
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SyaratPage()),
-                            (Route<dynamic> route) =>
-                                false, // Hapus semua halaman sebelumnya
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue, // Background warna biru
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(10), // Sudut rounded
-                          ),
-                        ),
-                        child: Text(
-                          'Pesan',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SyaratPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Container(
-          width: 360.0, // Frame width
-          height: 800.0, // Frame height
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black), // Border for the frame
-          ),
-          child: Padding(
-            padding:
-                const EdgeInsets.all(20.0), // Add padding around the content
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Align children to the start
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_back, // Icon for going back
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OrderPage(
-                            kendaraan:
-                                'your_kendaraan_value'), // Pass the correct kendaraan value
-                      ),
-                    );
-                  },
-                ),
-
-                Center(
-                  child: Text(
-                    'WheelsUp',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 10), // Spacer
-
-                // Sign Up Text
-                Center(
-                  child: Text(
-                    "Data Diri",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 10), // Spacer
-
-                // Subheading
-                Positioned(
-                  left: 74.0,
-                  top: 110.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Lengkapi Data Diri berikut untuk melanjutkan pemesanan!",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                        textAlign: TextAlign.center, // Center align the text
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20), // Spacer before text fields
-
-                // Input Fields
-                _buildTextField("Nama"),
-                _buildTextField("NIK"),
-                _buildTextField("Nomor Telepon"),
-                _buildTextField("Detail Alamat"),
-                _buildTextField("Usia"),
-
-                SizedBox(height: 20), // Spacer
-
-                SizedBox(height: 20), // Spacer
-
-                // Button to confirm order
-                _buildButton(context, "Pesan"),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Function to build text fields
-  Widget _buildTextField(String hintText) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0), // Add space between fields
-      child: Container(
-        width: double.infinity, // Take the full width of the container
-        height: 48.0,
-        decoration: BoxDecoration(
-          color: Colors.grey[300], // Background color
-          borderRadius: BorderRadius.circular(15.0),
-          border: Border.all(color: Colors.black), // Border
-        ),
-        child: TextField(
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: hintText,
-            contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Function to build buttons
-  Widget _buildButton(BuildContext context, String title) {
-    return Center(
-      child: GestureDetector(
-        onTap: () {
-          _showOrderConfirmationDialog(context); // Show dialog on button press
-        },
-        child: Container(
-          height: 48.0,
-          width: 150.0,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Center(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 15.0,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Function to show the order confirmation dialog
-  void _showOrderConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.directions_car, color: Colors.black), // Car icon
-              SizedBox(width: 10), // Spacing between icon and text
-              Text('Pemesanan Berhasil'),
-            ],
-          ),
-          content: Text('Anda berhasil melakukan pemesanan'),
-          actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          HomeFrame()), // Ensure HomeFrame is instantiated
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class NotifikasiPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Container(
-          width: 360.0, // Width of the frame
-          height: 800.0, // Height of the frame
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black, // Adding border for the frame
-            ),
-          ),
-          child: Stack(
-            children: [
-              // Back Icon positioned at x: 20.0, y: 66.0
-              Positioned(
-                left: 20.0, // x coordinate
-                top: 50.0, // y coordinate
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back, // Icon for going back
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            HomeFrame(), // Pass the correct kendaraan value
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              // "Wheels Up" text positioned at x: 128.0, y: 63.0
-              Positioned(
-                left: 128.0, // x coordinate
-                top: 50.0, // y coordinate
-                child: Text(
-                  "Wheels Up",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24.0, // Font size for "Wheels Up"
-                    fontWeight: FontWeight.w900, // Font weight
-                  ),
-                ),
-              ),
-
-              // "Notifikasi" text positioned at x: 24.0, y: 121.0
-              Positioned(
-                left: 24.0, // x coordinate
-                top: 121.0, // y coordinate
-                child: Text(
-                  "Notifikasi",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16.0, // Font size for "Notifikasi"
-                    fontWeight: FontWeight.w900, // Font weight
-                  ),
-                ),
-              ),
-
-              // Notification icon positioned at x: 314.0, y: 118.0
-              Positioned(
-                left: 314.0,
-                top: 118.0,
-                child: Icon(
-                  Icons.notifications, // Notification icon
-                  size: 24.0,
-                  color: Colors.black,
-                ),
-              ),
-
-              // First column: "WheelsUp", "Pesanan anda sedang diproses" with icon at x: 20, y: 168
-              Positioned(
-                left: 20.0,
-                top: 168.0,
-                child: Container(
-                  width: 320.0,
-                  height: 48.0,
-                  padding: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300], // Gray background
-                    borderRadius: BorderRadius.circular(15), // Radius 15
-                  ),
-                  child: Row(
-                    children: [
-                      // Icon as placeholder (can replace with image)
-                      Icon(
-                        Icons.directions_car, // Replace with Image if needed
-                        size: 24.0,
-                        color: Colors.black,
-                      ),
-                      SizedBox(width: 10), // Space between icon and text
-                      // Text content
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "WheelsUp",
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Text(
-                            "Pesanan anda sedang diproses",
-                            style: TextStyle(
-                              fontSize: 8.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Vertical spacing between notifications
-              SizedBox(height: 10),
-
-              // Second column: "Admin", "Jangan lupa bayar" positioned at x: 20, y: 232
-              Positioned(
-                left: 20.0,
-                top: 232.0,
-                child: Container(
-                  width: 320.0,
-                  height: 48.0,
-                  padding: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300], // Gray background
-                    borderRadius: BorderRadius.circular(15), // Radius 15
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Admin",
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Text(
-                            "Jangan lupa bayar",
-                            style: TextStyle(
-                              fontSize: 8.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Vertical spacing between notifications
-              SizedBox(height: 10),
-
-              // Third column: "Owner", "Bailikin mobilnya" positioned at x: 20, y: 296
-              Positioned(
-                left: 20.0,
-                top: 296.0,
-                child: Container(
-                  width: 320.0,
-                  height: 48.0,
-                  padding: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300], // Gray background
-                    borderRadius: BorderRadius.circular(15), // Radius 15
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Owner",
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Text(
-                            "Bailikin mobilnya",
-                            style: TextStyle(
-                              fontSize: 8.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Vertical spacing between notifications
-              SizedBox(height: 10),
-
-              // Fourth column: "WheelsUp", "Pesanan anda selesai diproses" positioned at x: 20, y: 360
-              Positioned(
-                left: 20.0,
-                top: 360.0,
-                child: Container(
-                  width: 320.0,
-                  height: 48.0,
-                  padding: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300], // Gray background
-                    borderRadius: BorderRadius.circular(15), // Radius 15
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "WheelsUp",
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Text(
-                            "Pesanan anda selesai diproses",
-                            style: TextStyle(
-                              fontSize: 8.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -2695,20 +1198,11 @@ class ProfilPage extends StatelessWidget {
                 LoginPage(), // Navigate to GantiAkunPage
               ),
 
-              // Second Column (Ganti Akun)
-              _buildClickableColumn(
-                context,
-                "Riwayat Pemesanan",
-                420.0,
-                Colors.black,
-                RiwayatPemesananPage(), // Navigate to GantiAkunPage
-              ),
-
               // Third Column with red text and icon (Log Out)
               _buildClickableColumn(
                 context,
                 "Log Out",
-                480.0,
+                420.0,
                 Colors.red,
                 LoginPage(), // Navigate to LoginPage
               ),
@@ -2746,23 +1240,30 @@ class ProfilPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.search, color: Colors.grey),
+                        icon: Icon(Icons.add_box, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SearchPage()));
+                                  builder: (context) => AddPage()));
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.favorite, color: Colors.grey),
+                        icon: Icon(Icons.chat_bubble, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RiwayatChatPage()));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.history, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => FavoritePage(
-                                  favoriteNameState: 'VehicleName'),
-                            ),
+                                builder: (context) => RiwayatPemesananPage()),
                           );
                         },
                       ),
@@ -2831,102 +1332,6 @@ class ProfilPage extends StatelessWidget {
                   Icons.arrow_forward_ios,
                   size: 20.0,
                   color: textColor, // Use the passed color
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class FavoriteFrame extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Container(
-          width: 360.0, // Frame width
-          height: 800.0, // Frame height
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black), // Border for the frame
-          ),
-          child: Stack(
-            children: [
-              // Main content of HomeFrame
-              Positioned(
-                left: 20.0,
-                top: 66.0,
-                child: Text(
-                  "Welcome to Favorite Page",
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              // More content can be added here as needed
-
-              // Bottom Navigation Bar
-              Positioned(
-                left: 0,
-                bottom: 0,
-                child: Container(
-                  width: 360.0,
-                  height: 60.0,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border:
-                        Border(top: BorderSide(color: Colors.black, width: 1)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.home, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeFrame()),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.search, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SearchPage()),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.favorite, color: Colors.black),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => FavoriteFrame()),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.account_circle, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfilPage()),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
                 ),
               ),
             ],
@@ -3351,294 +1756,273 @@ class ViewProfilePage extends StatelessWidget {
   }
 }
 
-class RiwayatPemesananPage extends StatelessWidget {
+class RiwayatPemesananPage extends StatefulWidget {
+  @override
+  _RiwayatPemesananPageState createState() => _RiwayatPemesananPageState();
+}
+
+class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
+  List<String> _statusOptions = [
+    'Mobil sudah dikembalikan',
+    'Mobil belum dikembalikan',
+  ];
+  String? _selectedStatus; // Status yang dipilih
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        toolbarHeight: 0, // Hide default AppBar
-      ),
-      body: Center(
-        child: Container(
-          width: 360,
-          height: 800,
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            border: Border.all(color: Colors.black, width: 2),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Stack(
-            children: [
-              // Icon back
-              Positioned(
-                left: 20,
-                top: 50,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // Navigate back when tapped
-                  },
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: 20,
-                    color: Colors.black,
-                  ),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          toolbarHeight: 0, // Hide default AppBar
+        ),
+        body: Center(
+            child: Container(
+                width: 360,
+                height: 800,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  border: Border.all(color: Colors.black, width: 2),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-              // Text "WheelsUp"
-              Positioned(
-                left: 0,
-                top: 50,
-                right: 0,
-                child: Center(
-                  child: Text(
-                    "WheelsUp",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                child: Stack(children: [
+                  // Icon back
+                  Positioned(
+                    left: 20,
+                    top: 50,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context); // Navigate back when tapped
+                      },
+                      child: Icon(
+                        Icons.arrow_back,
+                        size: 20,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-              ),
-              // Text 'Riwayat Pemesanan'
-              Positioned(
-                top: 80,
-                left: 0,
-                right: 0,
-                child: Text(
-                  'Riwayat Pemesanan',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              // Icon account circular
-              Positioned(
-                top: 120,
-                left: 22,
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey[300],
-                  child: Icon(Icons.account_circle,
-                      size: 55, color: Colors.grey[700]),
-                ),
-              ),
-              // Text 'Nama Kendaraan'
-              Positioned(
-                top: 125,
-                left: 85,
-                child: Text(
-                  'Nama Kendaraan',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-              ),
-              // Icon rating
-              Positioned(
-                top: 150,
-                left: 85,
-                child: Row(
-                  children: List.generate(
-                    5,
-                    (index) => Icon(Icons.star, color: Colors.amber, size: 20),
-                  ),
-                ),
-              ),
-              // Text 'Pemilik Kendaraan'
-              Positioned(
-                top: 180,
-                left: 31,
-                child: Text(
-                  'Nama Pemilik Kendaraan',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-                ),
-              ),
-              // Icon chat bubble
-              Positioned(
-                right: 40, // x coordinate
-                top: 180.0, // y coordinate
-                child: IconButton(
-                  icon: Icon(
-                    Icons.chat_bubble, // Icon for going back
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ChatPage(), // Pass the correct kendaraan value
+                  // Text "WheelsUp"
+                  Positioned(
+                    left: 0,
+                    top: 50,
+                    right: 0,
+                    child: Center(
+                      child: Text(
+                        "WheelsUp",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    );
-                  },
-                ),
-              ),
-              // Frame utama untuk proses pemesanan
-              Positioned(
-                top: 240,
-                left: 20,
-                right: 20,
-                child: Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue, width: 2),
-                    borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Proses 1: Mobil telah dipesan
-                      Row(
+                  // Text 'Riwayat Pemesanan'
+                  Positioned(
+                    top: 80,
+                    left: 0,
+                    right: 0,
+                    child: Text(
+                      'Riwayat Pemesanan',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  // Icon account circular
+                  Positioned(
+                    top: 120,
+                    left: 22,
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.grey[300],
+                      child: Icon(Icons.account_circle,
+                          size: 55, color: Colors.grey[700]),
+                    ),
+                  ),
+                  // Text 'Nama Kendaraan'
+                  Positioned(
+                    top: 125,
+                    left: 85,
+                    child: Text(
+                      'Nama Kendaraan',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                  // Icon rating
+                  Positioned(
+                    top: 150,
+                    left: 85,
+                    child: Row(
+                      children: List.generate(
+                        5,
+                        (index) =>
+                            Icon(Icons.star, color: Colors.amber, size: 20),
+                      ),
+                    ),
+                  ),
+                  // Text 'Pemilik Kendaraan'
+                  Positioned(
+                    top: 180,
+                    left: 31,
+                    child: Text(
+                      'Nama penyewa kendaraan',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                  // Icon chat bubble
+                  Positioned(
+                    right: 40,
+                    top: 180.0,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.chat_bubble,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ChatPage(), // Update this to your ChatPage class
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  // Frame utama untuk proses pemesanan
+                  Positioned(
+                    top: 240,
+                    left: 20,
+                    right: 20,
+                    child: Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.transparent, width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
+                          // Proses 1: Mobil telah dipesan
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.assignment,
-                                  color: Colors.grey[700], size: 24),
-                              Container(
-                                height: 40,
-                                width: 2,
-                                color: Colors.grey[400],
+                              Column(
+                                children: [
+                                  Icon(Icons.assignment,
+                                      color: Colors.grey[700], size: 24),
+                                  Container(
+                                    height: 40,
+                                    width: 2,
+                                    color: Colors.grey[400],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Mobil telah dipesan!',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    '12 Oktober 2024',
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.grey[600]),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                          SizedBox(width: 10),
-                          Column(
+                          SizedBox(height: 20), // Jarak antar proses
+                          // Proses 2: Mobil sedang digunakan
+                          Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Column(
+                                children: [
+                                  Icon(Icons.directions_car,
+                                      color: Colors.grey[700], size: 24),
+                                  Container(
+                                    height: 40,
+                                    width: 2,
+                                    color: Colors.grey[400],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 10),
                               Text(
-                                'Mobil telah dipesan!',
+                                'Mobil sedang digunakan',
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
-                              Text(
-                                '12 Oktober 2024',
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.grey[600]),
-                              ),
                             ],
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 20), // Jarak antar proses
-                      // Proses 2: Mobil sedang digunakan
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            children: [
-                              Icon(Icons.directions_car,
-                                  color: Colors.grey[700], size: 24),
-                              Container(
-                                height: 40,
-                                width: 2,
-                                color: Colors.grey[400],
-                              ),
-                            ],
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'Mobil sedang digunakan',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20), // Jarak antar proses
-                      // Proses 3: Mobil sudah dikembalikan
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(Icons.house, color: Colors.grey[700], size: 24),
-                          SizedBox(width: 10),
-                          Column(
+                          SizedBox(height: 20), // Jarak antar proses
+                          // Proses 3: Mobil sudah dikembalikan dengan DropdownButton
+                          Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Mobil sudah dikembalikan',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                '14 Oktober 2024',
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.grey[600]),
+                              Icon(Icons.house,
+                                  color: Colors.grey[700], size: 24),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: _selectedStatus,
+                                    hint: Text(
+                                      'Pilih Status Pengembalian',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    isExpanded: true,
+                                    icon: Icon(Icons.arrow_drop_down,
+                                        color: Colors.black),
+                                    items: _statusOptions.map((String status) {
+                                      return DropdownMenuItem<String>(
+                                        value: status,
+                                        child: Text(status,
+                                            style: TextStyle(fontSize: 16)),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _selectedStatus = newValue!;
+                                      });
+                                    },
+                                  ),
+                                ),
                               ),
                             ],
                           ),
+                          SizedBox(height: 20),
+                          TextField(
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Masukkan Tanggal',
+                              suffixIcon: Icon(Icons.calendar_today),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Tambahkan fungsi simpan di sini
+                              },
+                              child: Text('Simpan'),
+                            ),
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Bottom Navigation Bar
-              Positioned(
-                left: 0,
-                bottom: 0,
-                child: Container(
-                  width: 360.0,
-                  height: 60.0,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border:
-                        Border(top: BorderSide(color: Colors.black, width: 1)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.home, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeFrame()),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.search, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SearchPage()),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.favorite, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => FavoriteFrame()),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.account_circle, color: Colors.black),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfilPage()),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+                    ),
+                  )
+                ]))));
   }
 }
 
@@ -3778,6 +2162,447 @@ class ChatPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class AddPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          width: 360,
+          height: 800,
+          color: Colors.white,
+          child: Stack(
+            children: [
+              // Judul "WheelsUp"
+              Positioned(
+                left: 127,
+                top: 30,
+                child: Text(
+                  'WheelsUp',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+
+              // Tombol back
+              Positioned(
+                left: 20,
+                top: 25,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    Navigator.pop(
+                        context); // Pop untuk kembali ke halaman sebelumnya
+                  },
+                ),
+              ),
+
+              // Profil Pengguna
+              Positioned(
+                top: 90,
+                left: 20,
+                right: 20,
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.grey[300],
+                        child: Icon(
+                          Icons.account_circle,
+                          size: 50,
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Halo",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "Nama Pengguna",
+                            style: TextStyle(
+                                fontSize: 14, color: Colors.grey[600]),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Kolom Input "Nama Mobil"
+              Positioned(
+                top: 180,
+                left: 20,
+                child: _buildInputField("Nama Mobil", false),
+              ),
+
+              // Kolom Input "Harga"
+              Positioned(
+                top: 240,
+                left: 20,
+                child: _buildInputField("Harga", false),
+              ),
+
+              // Kolom Input "Alamat"
+              Positioned(
+                top: 300,
+                left: 20,
+                child: _buildInputField("Alamat", false),
+              ),
+
+              // Teks "Masukkan deskripsi di bawah"
+              Positioned(
+                top: 350,
+                left: 20,
+                child: Text(
+                  "Masukkan deskripsi di bawah",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+
+              // Kolom Input "Deskripsi"
+              Positioned(
+                top: 380,
+                left: 20,
+                child: _buildInputField("Deskripsi", true, height: 177),
+              ),
+
+              // Kolom Input "Masukkan Foto Properti"
+              Positioned(
+                top: 580,
+                left: 20,
+                child: Container(
+                  width: 320,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey[400]!),
+                  ),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Icon(Icons.camera_alt, color: Colors.grey[600]),
+                      ),
+                      Expanded(
+                        child: Text(
+                          "Masukkan Foto Properti",
+                          style:
+                              TextStyle(color: Colors.grey[600], fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Tombol "Simpan"
+              Positioned(
+                top: 650,
+                left: 105,
+                child: SizedBox(
+                  width: 150,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Logika untuk menyimpan data
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      "Simpan",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Bottom Navigation Bar
+              Positioned(
+                bottom: 0,
+                left: 0,
+                child: Container(
+                  width: 360,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.home, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeFrame()));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.add_box, color: Colors.black),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddPage()));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.chat_bubble, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RiwayatChatPage()));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.history, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      RiwayatPemesananPage()));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.account_circle, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfilPage()));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Widget untuk membangun kolom input
+  Widget _buildInputField(String hintText, bool isMultiline,
+      {double height = 48}) {
+    return Container(
+      width: 320,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey[400]!),
+      ),
+      child: TextField(
+        maxLines: isMultiline ? null : 1,
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: TextStyle(color: Colors.grey[600]),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        ),
+      ),
+    );
+  }
+}
+
+class RiwayatChatPage extends StatelessWidget {
+  // Sample list of users with the last message
+  final List<Map<String, String>> chatUsers = [
+    {
+      'name': 'John Doe',
+      'lastMessage': 'Hey, how are you?',
+      'image': 'assets/user1.jpg',
+    },
+    {
+      'name': 'Jane Smith',
+      'lastMessage': 'Let\'s meet up later!',
+      'image': 'assets/user2.jpg',
+    },
+    {
+      'name': 'Alex Brown',
+      'lastMessage': 'Got your message!',
+      'image': 'assets/user3.jpg',
+    },
+    // Add more users as needed
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          width: 360,
+          height: 800,
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              // Text "Riwayat Chat"
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'Riwayat Chat',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              // List of chat users
+              Expanded(
+                child: ListView.builder(
+                  itemCount: chatUsers.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage:
+                            AssetImage(chatUsers[index]['image'] ?? ''),
+                      ),
+                      title: Text(chatUsers[index]['name'] ?? ''),
+                      subtitle: Text(chatUsers[index]['lastMessage'] ?? ''),
+                      trailing: IconButton(
+                        icon: Icon(Icons.chat_bubble, color: Colors.black),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ChatPage()),
+                          );
+                        },
+                      ),
+                      onTap: () {
+                        // Logic to open the chat with the user
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ChatPage()),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+
+              // Bottom Navigation Bar
+              Positioned(
+                bottom: 0,
+                left: 0,
+                child: Container(
+                  width: 360,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.home, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeFrame()));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.add_box, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddPage()));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.chat_bubble, color: Colors.black),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RiwayatChatPage()));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.history, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RiwayatPemesananPage()),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.account_circle, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfilPage()));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
