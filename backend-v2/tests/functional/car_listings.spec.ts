@@ -12,9 +12,7 @@ test.group('Car Listings Controller', (group) => {
     const user = await UserFactory.create()
     await CarListingFactory.merge({ posterId: user.id }).createMany(15)
 
-    const response = await client
-      .get('/listings')
-      .loginAs(user)
+    const response = await client.get('/listings').loginAs(user)
 
     response.assertStatus(200)
     response.assertBodyContains({ meta: { total: 15, perPage: 10 } })
@@ -24,9 +22,7 @@ test.group('Car Listings Controller', (group) => {
     const user = await UserFactory.create()
     const listing = await CarListingFactory.merge({ posterId: user.id }).create()
 
-    const response = await client
-      .get(`/listings/${listing.id}`)
-      .loginAs(user)
+    const response = await client.get(`/listings/${listing.id}`).loginAs(user)
 
     response.assertStatus(200)
     response.assertBodyContains({ id: listing.id })
@@ -41,18 +37,15 @@ test.group('Car Listings Controller', (group) => {
       thumbnail: 'https://example.com/image.jpg',
       features: ['GPS', 'Leather Seats'],
       requirements: ['Valid License', 'Insurance'],
-      location: 'Test City'
+      location: 'Test City',
     }
 
-    const response = await client
-      .post('/listings')
-      .json(listingData)
-      .loginAs(user)
+    const response = await client.post('/listings').json(listingData).loginAs(user)
 
     response.assertStatus(200)
     response.assertBodyContains({
       name: listingData.name,
-      posterId: user.id
+      posterId: user.id,
     })
   })
 
@@ -63,10 +56,7 @@ test.group('Car Listings Controller', (group) => {
       // missing required fields
     }
 
-    const response = await client
-      .post('/listings')
-      .json(invalidData)
-      .loginAs(user)
+    const response = await client.post('/listings').json(invalidData).loginAs(user)
 
     response.assertStatus(422)
   })
@@ -76,18 +66,15 @@ test.group('Car Listings Controller', (group) => {
     const listing = await CarListingFactory.merge({ posterId: user.id }).create()
     const updateData = {
       name: 'Updated Title',
-      price: 600000
+      price: 600000,
     }
 
-    const response = await client
-      .put(`/listings/${listing.id}`)
-      .json(updateData)
-      .loginAs(user)
+    const response = await client.put(`/listings/${listing.id}`).json(updateData).loginAs(user)
 
     response.assertStatus(200)
     response.assertBodyContains({
       name: updateData.name,
-      price: updateData.price
+      price: updateData.price,
     })
   })
 
@@ -108,9 +95,7 @@ test.group('Car Listings Controller', (group) => {
     const user = await UserFactory.create()
     const listing = await CarListingFactory.merge({ posterId: user.id }).create()
 
-    const response = await client
-      .delete(`/listings/${listing.id}`)
-      .loginAs(user)
+    const response = await client.delete(`/listings/${listing.id}`).loginAs(user)
 
     response.assertStatus(200)
     response.assertBodyContains({ message: 'Listing deleted successfully' })
@@ -121,9 +106,7 @@ test.group('Car Listings Controller', (group) => {
     const nonOwner = await UserFactory.create()
     const listing = await CarListingFactory.merge({ posterId: owner.id }).create()
 
-    const response = await client
-      .delete(`/listings/${listing.id}`)
-      .loginAs(nonOwner)
+    const response = await client.delete(`/listings/${listing.id}`).loginAs(nonOwner)
 
     response.assertStatus(401)
   })
@@ -134,11 +117,7 @@ test.group('Car Listings Controller', (group) => {
     await CarListingFactory.merge({ posterId: user.id }).createMany(5)
     await CarListingFactory.merge({ posterId: user.id, description: 'test car' }).create()
 
-    const response = await client
-      .get('/listings/search')
-      .qs({ query: 'test' })
-      .loginAs(user)
-
+    const response = await client.get('/listings/search').qs({ query: 'test' }).loginAs(user)
 
     assert.isTrue(response.body().length > 0)
     response.assertStatus(200)

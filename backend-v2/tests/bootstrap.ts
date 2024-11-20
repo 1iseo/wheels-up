@@ -16,7 +16,12 @@ import emitter from '@adonisjs/core/services/emitter'
  * Configure Japa plugins in the plugins array.
  * Learn more - https://japa.dev/docs/runner-config#plugins-optional
  */
-export const plugins: Config['plugins'] = [assert(), apiClient(), pluginAdonisJS(app), authApiClient(app)]
+export const plugins: Config['plugins'] = [
+  assert(),
+  apiClient(),
+  pluginAdonisJS(app),
+  authApiClient(app),
+]
 
 /**
  * Configure lifecycle function to run before and after all the
@@ -28,14 +33,14 @@ export const plugins: Config['plugins'] = [assert(), apiClient(), pluginAdonisJS
 export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
   setup: [
     () => {
-      console.log("Current database connection: ")
+      console.log('Current database connection: ')
       console.log(db.config.connection)
 
       // emitter.on('db:query', function (query) {
       //   debugger
       // })
     },
-    () => testUtils.db().truncate()
+    () => testUtils.db().truncate(),
   ],
   teardown: [],
 }

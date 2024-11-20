@@ -11,7 +11,7 @@ export const CarListingFactory = factory
       price: faker.number.int({ min: 100000, max: 1000000 }),
       thumbnail: faker.image.url(),
       status: 'active' as 'active' | 'rented' | 'hidden',
-      location: faker.location.city()
+      location: faker.location.city(),
     }
   })
   .build()

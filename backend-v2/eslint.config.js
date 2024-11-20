@@ -1,2 +1,4 @@
 import { configApp } from '@adonisjs/eslint-config'
-export default configApp()
+import pluginSecurity from 'eslint-plugin-security'
+
+export default configApp(pluginSecurity.configs.recommended);

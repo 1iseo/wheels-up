@@ -50,9 +50,7 @@ export default class extends BaseSchema {
     this.schema.raw(`
       CREATE INDEX car_listings_search_idx ON car_listings USING GIN (search_vector);
     `)
-
   }
-
 
   async down() {
     await this.schema.raw(`

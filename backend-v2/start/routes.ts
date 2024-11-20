@@ -19,9 +19,9 @@ router.get('/', async () => {
 
 router.post('/auth/login', [AuthController, 'login'])
 router.post('/auth/register', [AuthController, 'register'])
-router.get('/listings', [CarListingsController, 'showAllListings']);
-router.get('/listings/search', [CarListingsController, 'searchListings']);
-router.post('/listings', [CarListingsController, 'createListing']);
-router.get('/listings/:id', [CarListingsController, 'showListing']);
-router.put('/listings/:id', [CarListingsController, 'updateListing']);
-router.delete('/listings/:id', [CarListingsController, 'deleteListing']);
+router.get('/listings', [CarListingsController, 'showAllListings'])
+router.get('/listings/search', [CarListingsController, 'searchListings'])
+router.post('/listings', [CarListingsController, 'createListing'])
+router.get('/listings/:id', [CarListingsController, 'showListing'])
+router.put('/listings/:id', [CarListingsController, 'updateListing'])
+router.delete('/listings/:id', [CarListingsController, 'deleteListing'])

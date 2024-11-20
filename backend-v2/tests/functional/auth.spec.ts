@@ -31,7 +31,7 @@ test.group('Auth', (group) => {
       password: '123', // Too short
       username: '', // Required
       full_name: faker.person.fullName(),
-      role: 'invalid-role'
+      role: 'invalid-role',
     })
 
     response.assertStatus(422)
@@ -43,7 +43,7 @@ test.group('Auth', (group) => {
     await UserFactory.merge({
       email,
       username: faker.internet.username(),
-      role: 'pemilik'
+      role: 'pemilik',
     }).create()
 
     const response = await client.post('/auth/register').json({
@@ -51,7 +51,7 @@ test.group('Auth', (group) => {
       password: 'Password123!',
       username: faker.internet.username(),
       full_name: faker.person.fullName(),
-      role: 'pemilik'
+      role: 'pemilik',
     })
 
     response.assertStatus(422)
@@ -63,7 +63,7 @@ test.group('Auth', (group) => {
     await UserFactory.merge({
       email: faker.internet.email(),
       username,
-      role: 'penyewa'
+      role: 'penyewa',
     }).create()
 
     const response = await client.post('/auth/register').json({
@@ -71,7 +71,7 @@ test.group('Auth', (group) => {
       password: 'Password123!',
       username,
       full_name: faker.person.fullName(),
-      role: 'penyewa'
+      role: 'penyewa',
     })
 
     response.assertStatus(422)
@@ -81,12 +81,12 @@ test.group('Auth', (group) => {
   test('login returns token with valid email credentials', async ({ client, assert }) => {
     const user = await UserFactory.merge({
       role: 'penyewa',
-      password: "testing-123"
+      password: 'testing-123',
     }).create()
 
     const response = await client.post('/auth/login').json({
       email: user.email,
-      password: "testing-123",
+      password: 'testing-123',
     })
 
     response.assertStatus(200)
@@ -97,12 +97,12 @@ test.group('Auth', (group) => {
   test('login returns token with valid username credentials', async ({ client, assert }) => {
     const user = await UserFactory.merge({
       role: 'penyewa',
-      password: "testing-123"
+      password: 'testing-123',
     }).create()
 
     const response = await client.post('/auth/login').json({
       email: user.email,
-      password: "testing-123",
+      password: 'testing-123',
     })
 
     response.assertStatus(200)
@@ -124,7 +124,7 @@ test.group('Auth', (group) => {
 
   test('login fails with missing fields', async ({ client, assert }) => {
     const response = await client.post('/auth/login').json({
-        password: 'Password123!',
+      password: 'Password123!',
     })
 
     response.assertStatus(400)
