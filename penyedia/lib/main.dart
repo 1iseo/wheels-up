@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'pages/landing_welcome.dart';
+import 'package:flutter/rendering.dart';
 
 void main() {
+  // debugPaintSizeEnabled = true;
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'WheelsUp',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Inter',
       ),
       home: MyHomePage(),
     );
@@ -18,18 +24,23 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
 
     // Automatically navigate to NextPage after 3 seconds
-    Future.delayed(Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(_createRoute());
+    Future.delayed(const Duration(seconds: 3), () {
+      // Check if the widget is still mounted before navigating
+      if (mounted) {
+        Navigator.of(context).pushReplacement(_createRoute());
+      }
     });
   }
 
@@ -62,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // Function to create a fade transition route
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => NextPage(),
+      pageBuilder: (context, animation, secondaryAnimation) => const LandingWelcome(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = 0.0;
         const end = 1.0;
@@ -102,6 +113,8 @@ class BottomClipper extends CustomClipper<Path> {
 }
 
 class NextPage extends StatelessWidget {
+  const NextPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,7 +128,7 @@ class NextPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Transform.translate(
-                  offset: Offset(0, 0),
+                  offset: const Offset(0, 0),
                   child: ClipPath(
                     clipper: BottomClipper(),
                     child: Image.asset(
@@ -126,8 +139,8 @@ class NextPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 1),
-                Text(
+                const SizedBox(height: 1),
+                const Text(
                   'Welcome to',
                   style: TextStyle(
                     fontSize: 24,
@@ -135,8 +148,8 @@ class NextPage extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 0),
-                Text(
+                const SizedBox(height: 0),
+                const Text(
                   'WheelsUp',
                   style: TextStyle(
                     fontSize: 45,
@@ -144,8 +157,8 @@ class NextPage extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 0),
-                Text(
+                const SizedBox(height: 0),
+                const Text(
                   'Offroad Anytime, Anywhere. \nBooking Mudah, Petualangan Tak Terbatas.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -154,7 +167,7 @@ class NextPage extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: GestureDetector(
@@ -167,7 +180,7 @@ class NextPage extends StatelessWidget {
                       width: 150,
                       height: 48,
                       color: Colors.black,
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           "Let's Go!",
                           style: TextStyle(
@@ -180,8 +193,8 @@ class NextPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
-                Text(
+                const SizedBox(height: 10),
+                const Text(
                   'User Manual',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -190,6 +203,7 @@ class NextPage extends StatelessWidget {
                     color: Colors.blue,
                   ),
                 ),
+                
               ],
             ),
           ),
@@ -200,6 +214,8 @@ class NextPage extends StatelessWidget {
 }
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPage createState() => _LoginPage();
 }
@@ -231,14 +247,14 @@ class _LoginPage extends State<LoginPage> {
                   onTap: () {
                     Navigator.pop(context); // Navigate back when tapped
                   },
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_back,
                     size: 20, // Set width to 20
                     color: Colors.black,
                   ),
                 ),
               ),
-              Positioned(
+              const Positioned(
                 left: 115.0,
                 top: 63.0,
                 child: Text(
@@ -250,7 +266,7 @@ class _LoginPage extends State<LoginPage> {
                   ),
                 ),
               ),
-              Positioned(
+              const Positioned(
                 left: 139.0,
                 top: 115.0,
                 child: Text(
@@ -262,7 +278,7 @@ class _LoginPage extends State<LoginPage> {
                   ),
                 ),
               ),
-              Positioned(
+              const Positioned(
                 left: 70.0,
                 top: 162.0,
                 child: Text(
@@ -289,9 +305,10 @@ class _LoginPage extends State<LoginPage> {
                       hintText: "username",
                       errorText: usernameError,
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16.0),
                     ),
-                    style: TextStyle(color: Colors.black, fontSize: 18),
+                    style: const TextStyle(color: Colors.black, fontSize: 18),
                   ),
                 ),
               ),
@@ -312,13 +329,14 @@ class _LoginPage extends State<LoginPage> {
                       hintText: "password",
                       errorText: passwordError,
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16.0),
                     ),
-                    style: TextStyle(color: Colors.black, fontSize: 18),
+                    style: const TextStyle(color: Colors.black, fontSize: 18),
                   ),
                 ),
               ),
-              Positioned(
+              const Positioned(
                 left: 24.0,
                 top: 329.0,
                 child: Text(
@@ -356,7 +374,7 @@ class _LoginPage extends State<LoginPage> {
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(15.0),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         "login",
                         style: TextStyle(
@@ -380,7 +398,7 @@ class _LoginPage extends State<LoginPage> {
                     );
                   },
                   child: RichText(
-                    text: TextSpan(
+                    text: const TextSpan(
                       text: "Belum punya akun? ",
                       style: TextStyle(
                         fontSize: 14.0,
@@ -408,6 +426,8 @@ class _LoginPage extends State<LoginPage> {
 }
 
 class SignUP extends StatefulWidget {
+  const SignUP({super.key});
+
   @override
   _SignUPState createState() => _SignUPState();
 }
@@ -444,12 +464,12 @@ class _SignUPState extends State<SignUP> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Pilih Sebagai'),
+          title: const Text('Pilih Sebagai'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: Text('Pemilik Mobil'),
+                title: const Text('Pemilik Mobil'),
                 onTap: () {
                   setState(() {
                     _sebagaiValue = 'Pemilik Mobil';
@@ -458,7 +478,7 @@ class _SignUPState extends State<SignUP> {
                 },
               ),
               ListTile(
-                title: Text('Penyewa Mobil'),
+                title: const Text('Penyewa Mobil'),
                 onTap: () {
                   setState(() {
                     _sebagaiValue = 'Penyewa Mobil';
@@ -503,12 +523,12 @@ class _SignUPState extends State<SignUP> {
                         width: 20.0, // Increase the width of the touchable area
                         height:
                             66.0, // Increase the height of the touchable area
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           shape:
                               BoxShape.circle, // Making the container circular
                           color: Colors.white, // Background color for the icon
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.arrow_back,
                           size: 20, // Icon size
                           color: Colors.black, // Icon color
@@ -520,7 +540,7 @@ class _SignUPState extends State<SignUP> {
               ),
 
               // "Wheels Up" text in the center
-              Positioned(
+              const Positioned(
                 left: 0,
                 right: 0,
                 top: 63.0,
@@ -535,7 +555,7 @@ class _SignUPState extends State<SignUP> {
                 ),
               ),
               // "Sign Up" text in the center
-              Positioned(
+              const Positioned(
                 left: 0,
                 right: 0,
                 top: 115.0,
@@ -550,7 +570,7 @@ class _SignUPState extends State<SignUP> {
                 ),
               ),
               // "Siap Menikmati Perjalananmu?" text in the center
-              Positioned(
+              const Positioned(
                 left: 0,
                 right: 0,
                 top: 162.0,
@@ -582,7 +602,7 @@ class _SignUPState extends State<SignUP> {
                         hintText: "Nama",
                         errorText: _nameError,
                       ),
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      style: const TextStyle(fontSize: 18, color: Colors.black),
                     ),
                   ),
                 ),
@@ -606,7 +626,7 @@ class _SignUPState extends State<SignUP> {
                         hintText: "Email",
                         errorText: _emailError,
                       ),
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      style: const TextStyle(fontSize: 18, color: Colors.black),
                       keyboardType: TextInputType.emailAddress,
                     ),
                   ),
@@ -631,7 +651,7 @@ class _SignUPState extends State<SignUP> {
                         hintText: "Username",
                         errorText: _usernameError,
                       ),
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      style: const TextStyle(fontSize: 18, color: Colors.black),
                     ),
                   ),
                 ),
@@ -655,7 +675,7 @@ class _SignUPState extends State<SignUP> {
                         hintText: "Password",
                         errorText: _passwordError,
                       ),
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      style: const TextStyle(fontSize: 18, color: Colors.black),
                       obscureText: true,
                     ),
                   ),
@@ -682,10 +702,11 @@ class _SignUPState extends State<SignUP> {
                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
                           child: Text(
                             _sebagaiValue, // Menampilkan nilai yang dipilih
-                            style: TextStyle(fontSize: 18, color: Colors.black),
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.black),
                           ),
                         ),
-                        Icon(Icons.arrow_drop_down),
+                        const Icon(Icons.arrow_drop_down),
                       ],
                     ),
                   ),
@@ -708,7 +729,7 @@ class _SignUPState extends State<SignUP> {
                       borderRadius:
                           BorderRadius.circular(15.0), // Radius set to 15.0
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         "Sign Up",
                         style: TextStyle(
@@ -731,7 +752,7 @@ class _SignUPState extends State<SignUP> {
                         context); // Navigate to login page or any other action
                   },
                   child: RichText(
-                    text: TextSpan(
+                    text: const TextSpan(
                       text: "Sudah punya akun? ",
                       style: TextStyle(fontSize: 12.0, color: Colors.black),
                       children: [
@@ -753,6 +774,8 @@ class _SignUPState extends State<SignUP> {
 }
 
 class HomeFrame extends StatelessWidget {
+  const HomeFrame({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -762,6 +785,8 @@ class HomeFrame extends StatelessWidget {
 }
 
 class EmptyPage extends StatelessWidget {
+  const EmptyPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -773,7 +798,7 @@ class EmptyPage extends StatelessWidget {
           child: Stack(
             children: [
               // Text "WheelsUp" at x: 127, y: 63
-              Positioned(
+              const Positioned(
                 left: 127,
                 top: 30,
                 child: Text(
@@ -796,7 +821,7 @@ class EmptyPage extends StatelessWidget {
                     color: Colors.transparent, // Transparent color
                     borderRadius: BorderRadius.circular(15), // Rounded corners
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Icon(
@@ -831,7 +856,7 @@ class EmptyPage extends StatelessWidget {
                 ),
               ),
 
-              Positioned(
+              const Positioned(
                 left: 35,
                 top: 185,
                 child: Text(
@@ -847,7 +872,7 @@ class EmptyPage extends StatelessWidget {
               Positioned(
                 left: 0,
                 top: 210,
-                child: Container(
+                child: SizedBox(
                   width: 360,
                   height: 550,
                   child: SingleChildScrollView(
@@ -857,7 +882,7 @@ class EmptyPage extends StatelessWidget {
                           child: Container(
                             width: 321,
                             height: 227,
-                            margin: EdgeInsets.symmetric(vertical: 5),
+                            margin: const EdgeInsets.symmetric(vertical: 5),
                             decoration: BoxDecoration(
                               color: Colors.blueGrey[100],
                               borderRadius: BorderRadius.circular(10),
@@ -867,7 +892,7 @@ class EmptyPage extends StatelessWidget {
                                 Container(
                                   width: 320,
                                   height: 135,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     borderRadius: BorderRadius.vertical(
                                       top: Radius.circular(10),
                                     ),
@@ -878,7 +903,7 @@ class EmptyPage extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 8),
+                                const SizedBox(height: 8),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8.0),
@@ -892,7 +917,7 @@ class EmptyPage extends StatelessWidget {
                                         children: [
                                           Text(
                                             'Kendaraan ${index + 1}',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black,
@@ -900,7 +925,7 @@ class EmptyPage extends StatelessWidget {
                                           ),
                                           Text(
                                             'Harga: Rp. ${(index + 1) * 100000}',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 14,
                                               color: Colors.black,
                                             ),
@@ -922,20 +947,20 @@ class EmptyPage extends StatelessWidget {
                                           }
                                         },
                                         itemBuilder: (context) => [
-                                          PopupMenuItem(
+                                          const PopupMenuItem(
                                             value: 'edit',
                                             child: Text('Edit'),
                                           ),
-                                          PopupMenuItem(
+                                          const PopupMenuItem(
                                             value: 'delete',
                                             child: Text('Hapus'),
                                           ),
-                                          PopupMenuItem(
+                                          const PopupMenuItem(
                                             value: 'add',
                                             child: Text('Tambah'),
                                           ),
                                         ],
-                                        child: Icon(Icons.more_vert),
+                                        child: const Icon(Icons.more_vert),
                                       ),
                                     ],
                                   ),
@@ -969,13 +994,13 @@ class EmptyPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.grey.shade200,
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                        const BorderRadius.vertical(top: Radius.circular(20)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
                         spreadRadius: 1,
                         blurRadius: 5,
-                        offset: Offset(0, -2),
+                        offset: const Offset(0, -2),
                       ),
                     ],
                   ),
@@ -983,7 +1008,7 @@ class EmptyPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.home, color: Colors.black),
+                        icon: const Icon(Icons.home, color: Colors.black),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -992,7 +1017,7 @@ class EmptyPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.add_box, color: Colors.grey),
+                        icon: const Icon(Icons.add_box, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1001,7 +1026,7 @@ class EmptyPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.chat_bubble, color: Colors.grey),
+                        icon: const Icon(Icons.chat_bubble, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1010,7 +1035,7 @@ class EmptyPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.history, color: Colors.grey),
+                        icon: const Icon(Icons.history, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -1020,7 +1045,8 @@ class EmptyPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.account_circle, color: Colors.grey),
+                        icon: const Icon(Icons.account_circle,
+                            color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1045,7 +1071,7 @@ class EmptyPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Filter Options'),
+          title: const Text('Filter Options'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1074,7 +1100,7 @@ class EmptyPage extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              child: Text('Apply Filters'),
+              child: const Text('Apply Filters'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
@@ -1090,8 +1116,8 @@ class EmptyPage extends StatelessWidget {
     return Container(
       width: 90,
       height: 30,
-      margin:
-          EdgeInsets.only(bottom: 8), // Menambahkan jarak antara kolom filter
+      margin: const EdgeInsets.only(
+          bottom: 8), // Menambahkan jarak antara kolom filter
       decoration: BoxDecoration(
         color: Colors.blueGrey[100], // Background color
         borderRadius: BorderRadius.circular(8), // Rounded corners
@@ -1099,7 +1125,7 @@ class EmptyPage extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         label,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 12,
           color: Colors.black,
         ),
@@ -1110,6 +1136,8 @@ class EmptyPage extends StatelessWidget {
 
 class ProfilPage extends StatelessWidget {
   final String email = "user@example.com";
+
+  const ProfilPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -1129,7 +1157,7 @@ class ProfilPage extends StatelessWidget {
                 left: 20.0, // x coordinate
                 top: 25.0, // y coordinate
                 child: IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back,
                     color: Colors.black,
                   ),
@@ -1141,7 +1169,7 @@ class ProfilPage extends StatelessWidget {
               ),
 
               // Wheels Up Text
-              Positioned(
+              const Positioned(
                 left: 128.0,
                 top: 25.0,
                 child: Text(
@@ -1155,7 +1183,7 @@ class ProfilPage extends StatelessWidget {
               ),
 
               // Account Circle Icon
-              Positioned(
+              const Positioned(
                 left: 120.0,
                 top: 70.0,
                 child: Icon(
@@ -1172,7 +1200,7 @@ class ProfilPage extends StatelessWidget {
                 child: Center(
                   child: Text(
                     email, // Display the email
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                       color: Colors.black,
                     ),
@@ -1217,13 +1245,13 @@ class ProfilPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.grey.shade200,
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                        const BorderRadius.vertical(top: Radius.circular(20)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
                         spreadRadius: 1,
                         blurRadius: 5,
-                        offset: Offset(0, -2),
+                        offset: const Offset(0, -2),
                       ),
                     ],
                   ),
@@ -1231,7 +1259,7 @@ class ProfilPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.home, color: Colors.grey),
+                        icon: const Icon(Icons.home, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1240,7 +1268,7 @@ class ProfilPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.add_box, color: Colors.grey),
+                        icon: const Icon(Icons.add_box, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1249,7 +1277,7 @@ class ProfilPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.chat_bubble, color: Colors.grey),
+                        icon: const Icon(Icons.chat_bubble, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1258,7 +1286,7 @@ class ProfilPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.history, color: Colors.grey),
+                        icon: const Icon(Icons.history, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -1268,7 +1296,8 @@ class ProfilPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.account_circle, color: Colors.black),
+                        icon: const Icon(Icons.account_circle,
+                            color: Colors.black),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1344,6 +1373,8 @@ class ProfilPage extends StatelessWidget {
 
 // EditProfileFrame page
 class EditProfileFrame extends StatefulWidget {
+  const EditProfileFrame({super.key});
+
   @override
   _EditProfileFrameState createState() => _EditProfileFrameState();
 }
@@ -1439,7 +1470,7 @@ class _EditProfileFrameState extends State<EditProfileFrame> {
                   onTap: () {
                     Navigator.pop(context); // Navigate back when tapped
                   },
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_back,
                     color: Colors.black,
                     size: 20.0,
@@ -1448,7 +1479,7 @@ class _EditProfileFrameState extends State<EditProfileFrame> {
               ),
 
               // Centering Wheels Up Text
-              Positioned(
+              const Positioned(
                 left: 0,
                 right: 0,
                 top: 58.0,
@@ -1465,7 +1496,7 @@ class _EditProfileFrameState extends State<EditProfileFrame> {
               ),
 
               // Centering Edit Profilmu Text
-              Positioned(
+              const Positioned(
                 left: 0,
                 right: 0,
                 top: 107.0,
@@ -1482,7 +1513,7 @@ class _EditProfileFrameState extends State<EditProfileFrame> {
               ),
 
               // Adding account_circle icon above the first column
-              Positioned(
+              const Positioned(
                 left: 120.0,
                 top: 150.0,
                 child: Icon(
@@ -1517,7 +1548,7 @@ class _EditProfileFrameState extends State<EditProfileFrame> {
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(15.0),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         "Simpan",
                         style: TextStyle(
@@ -1557,7 +1588,7 @@ class _EditProfileFrameState extends State<EditProfileFrame> {
                 ? errorText
                 : null, // Show error message if exists
             border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
           ),
         ),
       ),
@@ -1572,7 +1603,8 @@ class ViewProfilePage extends StatelessWidget {
   final String nomorSIM;
   final String password;
 
-  ViewProfilePage({
+  const ViewProfilePage({
+    super.key,
     required this.nama,
     required this.email,
     required this.nomorTelepon,
@@ -1607,7 +1639,7 @@ class ViewProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(context); // Navigate back when tapped
                   },
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_back,
                     size: 20, // Set width to 20
                     color: Colors.black,
@@ -1615,7 +1647,7 @@ class ViewProfilePage extends StatelessWidget {
                 ),
               ),
               // Text "WheelsUp"
-              Positioned(
+              const Positioned(
                 left: 0,
                 top: 50, // Set vertical position to center
                 right: 0,
@@ -1630,7 +1662,7 @@ class ViewProfilePage extends StatelessWidget {
                 ),
               ),
               // Text "Profilmu"
-              Positioned(
+              const Positioned(
                 left: 0,
                 top: 90, // Set vertical position to center
                 right: 0,
@@ -1648,10 +1680,10 @@ class ViewProfilePage extends StatelessWidget {
               Positioned(
                 left: 130,
                 top: 145,
-                child: Container(
+                child: SizedBox(
                   width: 100,
                   height: 100,
-                  child: Icon(
+                  child: const Icon(
                     Icons.account_circle,
                     size: 100, // Set width and height
                   ),
@@ -1698,7 +1730,7 @@ class ViewProfilePage extends StatelessWidget {
                   const EdgeInsets.only(left: 16), // Left padding for alignment
               child: Text(
                 data, // Display data only
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold, // Optional: Use bold for data
                 ),
@@ -1731,11 +1763,11 @@ class ViewProfilePage extends StatelessWidget {
             border: Border.all(color: Colors.black, width: 1), // Black border
             borderRadius: BorderRadius.circular(15), // Radius 15
           ),
-          child: Row(
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 16), // Left padding
+                padding: EdgeInsets.only(left: 16), // Left padding
                 child: Text(
                   "Edit Profil", // Edit Profil text
                   style: TextStyle(
@@ -1745,7 +1777,7 @@ class ViewProfilePage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 16), // Right padding
+                padding: EdgeInsets.only(right: 16), // Right padding
                 child: Icon(Icons.arrow_forward_ios), // Arrow forward icon
               ),
             ],
@@ -1757,12 +1789,14 @@ class ViewProfilePage extends StatelessWidget {
 }
 
 class RiwayatPemesananPage extends StatefulWidget {
+  const RiwayatPemesananPage({super.key});
+
   @override
   _RiwayatPemesananPageState createState() => _RiwayatPemesananPageState();
 }
 
 class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
-  List<String> _statusOptions = [
+  final List<String> _statusOptions = [
     'Mobil sudah dikembalikan',
     'Mobil belum dikembalikan',
   ];
@@ -1794,7 +1828,7 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                       onTap: () {
                         Navigator.pop(context); // Navigate back when tapped
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.arrow_back,
                         size: 20,
                         color: Colors.black,
@@ -1802,7 +1836,7 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                     ),
                   ),
                   // Text "WheelsUp"
-                  Positioned(
+                  const Positioned(
                     left: 0,
                     top: 50,
                     right: 0,
@@ -1817,7 +1851,7 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                     ),
                   ),
                   // Text 'Riwayat Pemesanan'
-                  Positioned(
+                  const Positioned(
                     top: 80,
                     left: 0,
                     right: 0,
@@ -1842,7 +1876,7 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                     ),
                   ),
                   // Text 'Nama Kendaraan'
-                  Positioned(
+                  const Positioned(
                     top: 125,
                     left: 85,
                     child: Text(
@@ -1858,13 +1892,13 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                     child: Row(
                       children: List.generate(
                         5,
-                        (index) =>
-                            Icon(Icons.star, color: Colors.amber, size: 20),
+                        (index) => const Icon(Icons.star,
+                            color: Colors.amber, size: 20),
                       ),
                     ),
                   ),
                   // Text 'Pemilik Kendaraan'
-                  Positioned(
+                  const Positioned(
                     top: 180,
                     left: 31,
                     child: Text(
@@ -1878,7 +1912,7 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                     right: 40,
                     top: 180.0,
                     child: IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.chat_bubble,
                         color: Colors.black,
                       ),
@@ -1899,7 +1933,7 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                     left: 20,
                     right: 20,
                     child: Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.transparent, width: 2),
                         borderRadius: BorderRadius.circular(10),
@@ -1922,11 +1956,11 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                                   ),
                                 ],
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Mobil telah dipesan!',
                                     style: TextStyle(
                                         fontSize: 16,
@@ -1941,7 +1975,7 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 20), // Jarak antar proses
+                          const SizedBox(height: 20), // Jarak antar proses
                           // Proses 2: Mobil sedang digunakan
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1957,38 +1991,39 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                                   ),
                                 ],
                               ),
-                              SizedBox(width: 10),
-                              Text(
+                              const SizedBox(width: 10),
+                              const Text(
                                 'Mobil sedang digunakan',
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
-                          SizedBox(height: 20), // Jarak antar proses
+                          const SizedBox(height: 20), // Jarak antar proses
                           // Proses 3: Mobil sudah dikembalikan dengan DropdownButton
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Icon(Icons.house,
                                   color: Colors.grey[700], size: 24),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
                                     value: _selectedStatus,
-                                    hint: Text(
+                                    hint: const Text(
                                       'Pilih Status Pengembalian',
                                       style: TextStyle(fontSize: 16),
                                     ),
                                     isExpanded: true,
-                                    icon: Icon(Icons.arrow_drop_down,
+                                    icon: const Icon(Icons.arrow_drop_down,
                                         color: Colors.black),
                                     items: _statusOptions.map((String status) {
                                       return DropdownMenuItem<String>(
                                         value: status,
                                         child: Text(status,
-                                            style: TextStyle(fontSize: 16)),
+                                            style:
+                                                const TextStyle(fontSize: 16)),
                                       );
                                     }).toList(),
                                     onChanged: (String? newValue) {
@@ -2001,21 +2036,21 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 20),
-                          TextField(
+                          const SizedBox(height: 20),
+                          const TextField(
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Masukkan Tanggal',
                               suffixIcon: Icon(Icons.calendar_today),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Center(
                             child: ElevatedButton(
                               onPressed: () {
                                 // Tambahkan fungsi simpan di sini
                               },
-                              child: Text('Simpan'),
+                              child: const Text('Simpan'),
                             ),
                           ),
                         ],
@@ -2027,20 +2062,22 @@ class _RiwayatPemesananPageState extends State<RiwayatPemesananPage> {
 }
 
 class ChatPage extends StatelessWidget {
+  const ChatPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70), // Tinggi AppBar khusus
+        preferredSize: const Size.fromHeight(70), // Tinggi AppBar khusus
         child: AppBar(
           backgroundColor: Colors.white,
           elevation: 2,
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black),
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
-          title: Text(
+          title: const Text(
             "WheelsUp",
             style: TextStyle(
               color: Colors.black,
@@ -2062,12 +2099,12 @@ class ChatPage extends StatelessWidget {
                   backgroundColor: Colors.grey[300],
                   child: Icon(Icons.person, size: 28, color: Colors.grey[700]),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Nama Pemilik Kendaraan",
                         style: TextStyle(
                           fontSize: 16,
@@ -2093,7 +2130,7 @@ class ChatPage extends StatelessWidget {
           // Daftar pesan
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               itemCount: 10, // Ganti sesuai jumlah pesan
               itemBuilder: (context, index) {
                 bool isSender = index % 2 == 0; // Pesan bergantian kiri/kanan
@@ -2101,26 +2138,28 @@ class ChatPage extends StatelessWidget {
                   alignment:
                       isSender ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    padding: EdgeInsets.all(12),
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: isSender
                           ? Colors.blue[100]
                           : Colors.grey[300], // Warna bubble
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
-                        bottomLeft:
-                            isSender ? Radius.circular(12) : Radius.circular(0),
-                        bottomRight:
-                            isSender ? Radius.circular(0) : Radius.circular(12),
+                        topLeft: const Radius.circular(12),
+                        topRight: const Radius.circular(12),
+                        bottomLeft: isSender
+                            ? const Radius.circular(12)
+                            : const Radius.circular(0),
+                        bottomRight: isSender
+                            ? const Radius.circular(0)
+                            : const Radius.circular(12),
                       ),
                     ),
                     child: Text(
                       isSender
                           ? "Pesan dari pengirim $index"
                           : "Pesan dari penerima $index",
-                      style: TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ),
                 );
@@ -2130,7 +2169,7 @@ class ChatPage extends StatelessWidget {
 
           // Input pesan
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             color: Colors.grey[100],
             child: Row(
               children: [
@@ -2138,8 +2177,8 @@ class ChatPage extends StatelessWidget {
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: "Ketik pesan...",
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide(color: Colors.grey[300]!),
@@ -2147,12 +2186,12 @@ class ChatPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 CircleAvatar(
                   radius: 24,
                   backgroundColor: Colors.blue,
                   child: IconButton(
-                    icon: Icon(Icons.send, color: Colors.white),
+                    icon: const Icon(Icons.send, color: Colors.white),
                     onPressed: () {
                       // Logika untuk mengirim pesan
                     },
@@ -2168,6 +2207,8 @@ class ChatPage extends StatelessWidget {
 }
 
 class AddPage extends StatelessWidget {
+  const AddPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -2179,7 +2220,7 @@ class AddPage extends StatelessWidget {
           child: Stack(
             children: [
               // Judul "WheelsUp"
-              Positioned(
+              const Positioned(
                 left: 127,
                 top: 30,
                 child: Text(
@@ -2197,7 +2238,7 @@ class AddPage extends StatelessWidget {
                 left: 20,
                 top: 25,
                 child: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.black),
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () {
                     Navigator.pop(
                         context); // Pop untuk kembali ke halaman sebelumnya
@@ -2211,7 +2252,7 @@ class AddPage extends StatelessWidget {
                 left: 20,
                 right: 20,
                 child: Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(10),
@@ -2221,16 +2262,16 @@ class AddPage extends StatelessWidget {
                       CircleAvatar(
                         radius: 28,
                         backgroundColor: Colors.grey[300],
-                        child: Icon(
+                        child: const Icon(
                           Icons.account_circle,
                           size: 50,
                         ),
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             "Halo",
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
@@ -2269,7 +2310,7 @@ class AddPage extends StatelessWidget {
               ),
 
               // Teks "Masukkan deskripsi di bawah"
-              Positioned(
+              const Positioned(
                 top: 350,
                 left: 20,
                 child: Text(
@@ -2336,7 +2377,7 @@ class AddPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       "Simpan",
                       style: TextStyle(
                         fontSize: 16,
@@ -2358,13 +2399,13 @@ class AddPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.grey.shade200,
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                        const BorderRadius.vertical(top: Radius.circular(20)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
                         spreadRadius: 1,
                         blurRadius: 5,
-                        offset: Offset(0, -2),
+                        offset: const Offset(0, -2),
                       ),
                     ],
                   ),
@@ -2372,7 +2413,7 @@ class AddPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.home, color: Colors.grey),
+                        icon: const Icon(Icons.home, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -2381,7 +2422,7 @@ class AddPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.add_box, color: Colors.black),
+                        icon: const Icon(Icons.add_box, color: Colors.black),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -2390,7 +2431,7 @@ class AddPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.chat_bubble, color: Colors.grey),
+                        icon: const Icon(Icons.chat_bubble, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -2399,7 +2440,7 @@ class AddPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.history, color: Colors.grey),
+                        icon: const Icon(Icons.history, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -2409,7 +2450,8 @@ class AddPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.account_circle, color: Colors.grey),
+                        icon: const Icon(Icons.account_circle,
+                            color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -2445,7 +2487,8 @@ class AddPage extends StatelessWidget {
           hintText: hintText,
           hintStyle: TextStyle(color: Colors.grey[600]),
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         ),
       ),
     );
@@ -2473,19 +2516,21 @@ class RiwayatChatPage extends StatelessWidget {
     // Add more users as needed
   ];
 
+  RiwayatChatPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: 360,
           height: 800,
           child: Column(
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Text "Riwayat Chat"
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   'Riwayat Chat',
                   style: TextStyle(
@@ -2507,7 +2552,8 @@ class RiwayatChatPage extends StatelessWidget {
                       title: Text(chatUsers[index]['name'] ?? ''),
                       subtitle: Text(chatUsers[index]['lastMessage'] ?? ''),
                       trailing: IconButton(
-                        icon: Icon(Icons.chat_bubble, color: Colors.black),
+                        icon:
+                            const Icon(Icons.chat_bubble, color: Colors.black),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -2537,13 +2583,13 @@ class RiwayatChatPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.grey.shade200,
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                        const BorderRadius.vertical(top: Radius.circular(20)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
                         spreadRadius: 1,
                         blurRadius: 5,
-                        offset: Offset(0, -2),
+                        offset: const Offset(0, -2),
                       ),
                     ],
                   ),
@@ -2551,7 +2597,7 @@ class RiwayatChatPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.home, color: Colors.grey),
+                        icon: const Icon(Icons.home, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -2560,7 +2606,7 @@ class RiwayatChatPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.add_box, color: Colors.grey),
+                        icon: const Icon(Icons.add_box, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -2569,7 +2615,8 @@ class RiwayatChatPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.chat_bubble, color: Colors.black),
+                        icon:
+                            const Icon(Icons.chat_bubble, color: Colors.black),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -2578,7 +2625,7 @@ class RiwayatChatPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.history, color: Colors.grey),
+                        icon: const Icon(Icons.history, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -2588,7 +2635,8 @@ class RiwayatChatPage extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.account_circle, color: Colors.grey),
+                        icon: const Icon(Icons.account_circle,
+                            color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
