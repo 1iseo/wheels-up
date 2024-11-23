@@ -6,7 +6,7 @@ import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import testUtils from '@adonisjs/core/services/test_utils'
 import db from '@adonisjs/lucid/services/db'
 import { authApiClient } from '@adonisjs/auth/plugins/api_client'
-import emitter from '@adonisjs/core/services/emitter'
+// import emitter from '@adonisjs/core/services/emitter'
 
 /**
  * This file is imported by the "bin/test.ts" entrypoint file

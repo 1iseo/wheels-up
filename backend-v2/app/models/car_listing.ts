@@ -1,8 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, beforeSave } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
 import User from '#models/user'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import db from '@adonisjs/lucid/services/db'
 
 export default class CarListing extends BaseModel {
   @column({ isPrimary: true })
