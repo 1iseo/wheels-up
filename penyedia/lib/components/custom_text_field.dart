@@ -74,7 +74,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
       readOnly: widget.readOnly,
       decoration: outlinedInputDecoration(
         hintText: widget.hintText,
-        suffixText: "*",
         suffixIcon: widget.obscureText
             ? IconButton(
                 icon: Icon(
