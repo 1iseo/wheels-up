@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'login_page.dart';
+import 'package:flutter_application_3/pages/login_page.dart';
 
 class TriangleClipper extends CustomClipper<Path> {
   @override
@@ -94,7 +94,7 @@ class LandingWelcome extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          MaterialPageRoute(builder: (context) => const LoginPage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(

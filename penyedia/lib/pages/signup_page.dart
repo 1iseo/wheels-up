@@ -1,16 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_application_3/components/input_decoration.dart';
-import 'package:flutter_application_3/pages/signup_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
-  @override
-  _LoginPageState createState() => _LoginPageState();
+InputDecoration myInputDecoration({
+  required String hintText,
+  String suffixText = '*',
+  Color hintColor = Colors.grey,
+  Color fillColor = Colors.grey,
+  Color borderColor = Colors.blue,
+  double borderRadius = 15.0,
+}) {
+  return InputDecoration(
+    hintStyle: TextStyle(color: Colors.grey.shade600),
+    filled: true,
+    fillColor: Colors.grey.shade200,
+    hintText: hintText,
+    suffix: Text(
+      suffixText,
+      style: const TextStyle(color: Colors.red, fontSize: 14, height: 2),
+    ),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(borderRadius), // Rounded corners
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(borderRadius),
+      borderSide: BorderSide.none,
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(borderRadius),
+      borderSide: BorderSide(color: borderColor),
+    ),
+    contentPadding:
+        const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+  );
 }
 
-class _LoginPageState extends State<LoginPage> {
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
+  @override
+  _SignUpPageState createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -36,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 Text(
-                  "Login",
+                  "SIgn Up",
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w900,
@@ -61,13 +92,13 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 TextField(
                   controller: usernameController,
-                  decoration: outlinedInputDecoration(hintText: "Username"),
+                  decoration: myInputDecoration(hintText: "Username"),
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: outlinedInputDecoration(hintText: "Password"),
+                  decoration: myInputDecoration(hintText: "Password"),
                 ),
                 const SizedBox(height: 8),
                 const Align(
@@ -86,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                       textStyle: const TextStyle(fontSize: 18),
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.black),
-                  child: const Text('Login'),
+                  child: const Text('Sign Up'),
                 ),
                 const SizedBox(
                   height: 16,

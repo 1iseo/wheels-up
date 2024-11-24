@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/landing_welcome.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter_application_3/pages/landing_welcome.dart';
 
 void main() {
   // debugPaintSizeEnabled = true;
@@ -73,7 +72,8 @@ class MyHomePageState extends State<MyHomePage> {
   // Function to create a fade transition route
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => const LandingWelcome(),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const LandingWelcome(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = 0.0;
         const end = 1.0;
@@ -203,7 +203,6 @@ class NextPage extends StatelessWidget {
                     color: Colors.blue,
                   ),
                 ),
-                
               ],
             ),
           ),
