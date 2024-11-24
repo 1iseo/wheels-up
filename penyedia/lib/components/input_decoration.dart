@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 InputDecoration outlinedInputDecoration({
   required String hintText,
-  String suffixText = '*',
+  String? suffixText,
+  Widget? suffixIcon,
   Color hintColor = Colors.grey,
   Color fillColor = Colors.grey,
   Color borderColor = Colors.blue,
@@ -13,10 +14,13 @@ InputDecoration outlinedInputDecoration({
     filled: true,
     fillColor: Colors.grey.shade200,
     hintText: hintText,
-    suffix: Text(
-      suffixText,
-      style: const TextStyle(color: Colors.red, fontSize: 14, height: 2),
-    ),
+    suffix: suffixText != null
+        ? Text(
+            suffixText,
+            style: const TextStyle(color: Colors.red, fontSize: 14, height: 2),
+          )
+        : null,
+    suffixIcon: suffixIcon,
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(borderRadius), // Rounded corners
     ),
