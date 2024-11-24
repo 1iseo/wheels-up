@@ -15,6 +15,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   String? usernameError;
   String? passwordError;
@@ -85,6 +86,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 CustomTextField(
                   controller: passwordController,
                   hintText: "Password",
+                  obscureText: true,
+                  keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  controller: confirmPasswordController,
+                  hintText: "Confirm Password",
                   obscureText: true,
                   keyboardType: TextInputType.visiblePassword,
                   textInputAction: TextInputAction.done,
