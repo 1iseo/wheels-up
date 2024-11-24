@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_application_3/components/input_decoration.dart';
+import 'package:flutter_application_3/components/custom_text_field.dart';
 import 'package:flutter_application_3/pages/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -59,15 +60,19 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Column(
               children: [
-                TextField(
+                CustomTextField(
                   controller: usernameController,
-                  decoration: outlinedInputDecoration(hintText: "Username"),
+                  hintText: "Username",
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                TextField(
+                CustomTextField(
                   controller: passwordController,
+                  hintText: "Password",
                   obscureText: true,
-                  decoration: outlinedInputDecoration(hintText: "Password"),
+                  keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.done,
                 ),
                 const SizedBox(height: 8),
                 const Align(

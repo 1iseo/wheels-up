@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_application_3/components/input_decoration.dart';
+import 'package:flutter_application_3/components/custom_text_field.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -60,25 +61,33 @@ class _SignUpPageState extends State<SignUpPage> {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Column(
               children: [
-                TextField(
+                CustomTextField(
                   controller: nameController,
-                  decoration: outlinedInputDecoration(hintText: "Nama"),
+                  hintText: "Nama",
+                  keyboardType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                TextField(
+                CustomTextField(
                   controller: emailController,
-                  decoration: outlinedInputDecoration(hintText: "Email"),
+                  hintText: "Email",
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                TextField(
+                CustomTextField(
                   controller: usernameController,
-                  decoration: outlinedInputDecoration(hintText: "Username"),
+                  hintText: "Username",
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                TextField(
+                CustomTextField(
                   controller: passwordController,
+                  hintText: "Password",
                   obscureText: true,
-                  decoration: outlinedInputDecoration(hintText: "Password"),
+                  keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.done,
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
