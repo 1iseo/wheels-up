@@ -94,7 +94,10 @@ class _LoginPageState extends State<LoginPage> {
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   const Text("Belum punya akun? "),
                   GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const SignUpPage()));
+                      },
                       child: const Text(
                         "Sign Up",
                         style: TextStyle(color: Colors.blue),

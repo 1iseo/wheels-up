@@ -1,38 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
-InputDecoration myInputDecoration({
-  required String hintText,
-  String suffixText = '*',
-  Color hintColor = Colors.grey,
-  Color fillColor = Colors.grey,
-  Color borderColor = Colors.blue,
-  double borderRadius = 15.0,
-}) {
-  return InputDecoration(
-    hintStyle: TextStyle(color: Colors.grey.shade600),
-    filled: true,
-    fillColor: Colors.grey.shade200,
-    hintText: hintText,
-    suffix: Text(
-      suffixText,
-      style: const TextStyle(color: Colors.red, fontSize: 14, height: 2),
-    ),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(borderRadius), // Rounded corners
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(borderRadius),
-      borderSide: BorderSide.none,
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(borderRadius),
-      borderSide: BorderSide(color: borderColor),
-    ),
-    contentPadding:
-        const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-  );
-}
+import 'package:flutter_application_3/components/input_decoration.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -42,6 +10,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -67,7 +37,7 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               children: [
                 Text(
-                  "SIgn Up",
+                  "Sign Up",
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w900,
@@ -91,22 +61,25 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               children: [
                 TextField(
+                  controller: nameController,
+                  decoration: outlinedInputDecoration(hintText: "Nama"),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: emailController,
+                  decoration: outlinedInputDecoration(hintText: "Email"),
+                ),
+                const SizedBox(height: 16),
+                TextField(
                   controller: usernameController,
-                  decoration: myInputDecoration(hintText: "Username"),
+                  decoration: outlinedInputDecoration(hintText: "Username"),
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: myInputDecoration(hintText: "Password"),
+                  decoration: outlinedInputDecoration(hintText: "Password"),
                 ),
-                const SizedBox(height: 8),
-                const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Text("Lupa password?", textAlign: TextAlign.start),
-                    )),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {},
@@ -123,11 +96,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   height: 16,
                 ),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Text("Belum punya akun? "),
+                  const Text("Sudah punya akun? "),
                   GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        // We can only go to this page from the login page.
+                        Navigator.pop(context);
+                      },
                       child: const Text(
-                        "Sign Up",
+                        "Log in",
                         style: TextStyle(color: Colors.blue),
                       ))
                 ])
