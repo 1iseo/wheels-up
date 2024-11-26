@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_3/pages/home_page.dart';
+import 'package:wheels_up/pages/home_page.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_application_3/components/custom_text_field.dart';
-import 'package:flutter_application_3/pages/signup_page.dart';
+import 'package:wheels_up/components/custom_text_field.dart';
+import 'package:wheels_up/pages/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
