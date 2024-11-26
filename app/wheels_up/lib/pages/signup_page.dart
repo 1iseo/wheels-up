@@ -20,6 +20,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String? usernameError;
   String? passwordError;
 
+  String selectedRole = 'Penyewa'; // Default value
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,6 +99,47 @@ class _SignUpPageState extends State<SignUpPage> {
                   obscureText: true,
                   keyboardType: TextInputType.visiblePassword,
                   textInputAction: TextInputAction.done,
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: selectedRole,
+                  hint: const Text("Sebagai"),
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    fillColor: Colors.grey.shade200,
+                    filled: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 15.0),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'Penyedia',
+                      child: Text('Penyedia'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Penyewa',
+                      child: Text('Penyewa'),
+                    ),
+                  ],
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        selectedRole = newValue;
+                      });
+                    }
+                  },
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
