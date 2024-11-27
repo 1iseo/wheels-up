@@ -166,7 +166,7 @@ class _AddListingPageState extends State<AddListingPage> {
                     Expanded(
                       child: CustomTextField(
                         controller: _requirementController,
-                        hintText: 'Requirements',
+                        hintText: 'Syarat-syarat',
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.done,
                       ),

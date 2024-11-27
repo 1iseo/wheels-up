@@ -15,6 +15,7 @@ class HomePagePemilik extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         toolbarHeight: 80,
+        scrolledUnderElevation: 0.0,
         title: Container(
           constraints: const BoxConstraints(maxWidth: 100),
           child: SvgPicture.asset('assets/wheelsup_text_logo.svg'),
