@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wheels_up/pages/home_page.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wheels_up/components/custom_text_field.dart';
+import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/pages/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -87,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const HomePage()));
+                            builder: (context) => AppShell()));
                   },
                   style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),
