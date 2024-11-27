@@ -18,7 +18,9 @@ class AuthService {
 
       if (response.statusCode == 200) {
         final token = response.data['token'];
+        final role = response.data['role'];
         await _storage.write(key: 'auth_token', value: token);
+        await _storage.write(key: 'user_role', value: role);
         return token;
       }
       return null;
@@ -49,6 +51,7 @@ class AuthService {
       if (response.statusCode == 200) {
         final token = response.data['token'];
         await _storage.write(key: 'auth_token', value: token);
+        await _storage.write(key: 'user_role', value: role.toLowerCase());
         return token;
       }
       return null;
@@ -65,9 +68,14 @@ class AuthService {
 
   Future<void> logout() async {
     await _storage.delete(key: 'auth_token');
+    await _storage.delete(key: 'user_role');
   }
 
   Future<String?> getToken() async {
     return await _storage.read(key: 'auth_token');
+  }
+
+  Future<String?> getRole() async {
+    return await _storage.read(key: 'user_role');
   }
 }
