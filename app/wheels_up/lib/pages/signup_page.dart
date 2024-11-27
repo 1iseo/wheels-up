@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wheels_up/components/custom_text_field.dart';
+import 'package:wheels_up/pages/main_shell.dart';
+import 'package:wheels_up/services/auth_service.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -17,10 +19,115 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
+  final _authService = AuthService();
+  bool _isLoading = false;
+
+  String? nameError;
+  String? emailError;
   String? usernameError;
   String? passwordError;
+  String? confirmPasswordError;
 
   String selectedRole = 'Penyewa'; // Default value
+
+  Future<void> _handleSignup() async {
+    setState(() {
+      nameError = null;
+      emailError = null;
+      usernameError = null;
+      passwordError = null;
+      confirmPasswordError = null;
+      _isLoading = true;
+    });
+
+    // Validate inputs
+    bool hasError = false;
+    if (nameController.text.isEmpty) {
+      setState(() {
+        nameError = 'Please enter your full name';
+        hasError = true;
+      });
+    }
+
+    if (emailController.text.isEmpty) {
+      setState(() {
+        emailError = 'Please enter your email';
+        hasError = true;
+      });
+    } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+        .hasMatch(emailController.text)) {
+      setState(() {
+        emailError = 'Please enter a valid email';
+        hasError = true;
+      });
+    }
+
+    if (usernameController.text.isEmpty) {
+      setState(() {
+        usernameError = 'Please enter a username';
+        hasError = true;
+      });
+    } else if (usernameController.text.length < 4) {
+      setState(() {
+        usernameError = 'Username must be at least 4 characters';
+        hasError = true;
+      });
+    }
+
+    if (passwordController.text.isEmpty) {
+      setState(() {
+        passwordError = 'Please enter a password';
+        hasError = true;
+      });
+    } else if (passwordController.text.length < 8) {
+      setState(() {
+        passwordError = 'Password must be at least 8 characters';
+        hasError = true;
+      });
+    }
+
+    if (confirmPasswordController.text != passwordController.text) {
+      setState(() {
+        confirmPasswordError = 'Passwords do not match';
+        hasError = true;
+      });
+    }
+
+    if (hasError) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      final token = await _authService.register(
+        email: emailController.text,
+        password: passwordController.text,
+        fullName: nameController.text,
+        username: usernameController.text,
+        role: selectedRole,
+      );
+
+      if (token != null && mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainAppShell()),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,92 +173,85 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 CustomTextField(
                   controller: nameController,
-                  hintText: "Nama",
-                  keyboardType: TextInputType.name,
-                  textInputAction: TextInputAction.next,
+                  hintText: "Full Name",
+                  errorText: nameError,
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
                   controller: emailController,
                   hintText: "Email",
+                  errorText: emailError,
                   keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
                   controller: usernameController,
                   hintText: "Username",
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.next,
+                  errorText: usernameError,
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
                   controller: passwordController,
                   hintText: "Password",
+                  errorText: passwordError,
                   obscureText: true,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
                   controller: confirmPasswordController,
                   hintText: "Confirm Password",
+                  errorText: confirmPasswordError,
                   obscureText: true,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.done,
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: selectedRole,
-                  hint: const Text("Sebagai"),
-                  isExpanded: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(15), // Rounded corners
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: const BorderSide(color: Colors.grey),
-                    ),
-                    fillColor: Colors.grey.shade200,
-                    filled: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 15.0),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
                   items: const [
-                    DropdownMenuItem(
-                      value: 'Penyedia',
-                      child: Text('Penyedia'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Penyewa',
-                      child: Text('Penyewa'),
-                    ),
+                    DropdownMenuItem(value: 'Penyewa', child: Text('Penyewa')),
+                    DropdownMenuItem(value: 'Pemilik', child: Text('Pemilik')),
                   ],
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      setState(() {
-                        selectedRole = newValue;
-                      });
-                    }
+                  onChanged: (value) {
+                    setState(() {
+                      selectedRole = value!;
+                    });
                   },
                 ),
                 const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 48, vertical: 20),
-                      textStyle: const TextStyle(fontSize: 18),
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.black),
-                  child: const Text('Sign Up'),
+                SizedBox(
+                  width: double.infinity,
+                  height: 45,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _handleSignup,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : const Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
                 ),
                 const SizedBox(
                   height: 16,

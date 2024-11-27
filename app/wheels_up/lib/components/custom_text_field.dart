@@ -55,6 +55,7 @@ class CustomTextField extends StatefulWidget {
   final TextStyle? style;
   final bool autofocus;
   final bool readOnly;
+  final String? errorText;
 
   const CustomTextField({
     super.key,
@@ -75,6 +76,7 @@ class CustomTextField extends StatefulWidget {
     this.style,
     this.autofocus = false,
     this.readOnly = false,
+    this.errorText,
   });
 
   @override
@@ -92,12 +94,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: widget.controller,
       obscureText: _obscureText,
       keyboardType: widget.keyboardType,
       textInputAction: widget.textInputAction,
       onChanged: widget.onChanged,
+      validator: widget.validator,
       onTap: widget.onTap,
       enabled: widget.enabled,
       maxLines: widget.maxLines,
@@ -113,9 +116,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
         suffixIcon: widget.obscureText
             ? IconButton(
                 icon: Icon(
-                  _obscureText ? Icons.visibility : Icons.visibility_off,
+                  _obscureText ? Icons.visibility_off : Icons.visibility,
                   color: Colors.grey,
-                  size: 18,
                 ),
                 onPressed: () {
                   setState(() {
@@ -124,6 +126,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 },
               )
             : null,
+      ).copyWith(
+        errorText: widget.errorText,
+        errorStyle: const TextStyle(color: Colors.red),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.0),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.0),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
       ),
     );
   }

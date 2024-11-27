@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:wheels_up/components/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/pages/signup_page.dart';
+import 'package:wheels_up/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,9 +16,59 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final _authService = AuthService();
+  bool _isLoading = false;
 
   String? usernameError;
   String? passwordError;
+
+  Future<void> _handleLogin() async {
+    setState(() {
+      usernameError = null;
+      passwordError = null;
+      _isLoading = true;
+    });
+
+    if (usernameController.text.isEmpty) {
+      setState(() {
+        usernameError = 'Please enter username or email';
+        _isLoading = false;
+      });
+      return;
+    }
+
+    if (passwordController.text.isEmpty) {
+      setState(() {
+        passwordError = 'Please enter password';
+        _isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      final token = await _authService.login(
+        usernameController.text,
+        passwordController.text,
+      );
+
+      if (token != null) {
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainAppShell()),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
+        passwordError = e.toString();
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +114,8 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 CustomTextField(
                   controller: usernameController,
-                  hintText: "Username",
+                  hintText: "Username or Email",
+                  errorText: usernameError,
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
                 ),
@@ -71,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 CustomTextField(
                   controller: passwordController,
                   hintText: "Password",
+                  errorText: passwordError,
                   obscureText: true,
                   keyboardType: TextInputType.visiblePassword,
                   textInputAction: TextInputAction.done,
@@ -83,21 +136,36 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text("Lupa password?", textAlign: TextAlign.start),
                     )),
                 const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AppShell()));
-                  },
-                  style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 48, vertical: 20),
-                      textStyle: const TextStyle(fontSize: 18),
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.black),
-                  child: const Text('Login'),
+                SizedBox(
+                  width: double.infinity,
+                  height: 45,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _handleLogin,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : const Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
                 ),
                 const SizedBox(
                   height: 16,

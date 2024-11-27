@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 // This class handles bottom bar navigation, and also creates nested navigators for each tab / page.
-class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+class MainAppShell extends StatefulWidget {
+  const MainAppShell({super.key});
 
   @override
-  _AppShellState createState() => _AppShellState();
+  _MainAppShellState createState() => _MainAppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
+class _MainAppShellState extends State<MainAppShell> {
   int _currentIndex = 0;
 
   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
@@ -30,7 +30,7 @@ class _AppShellState extends State<AppShell> {
         index: _currentIndex,
         children: [
           _buildNavigator(0, HomePagePenyewa()),
-          _buildNavigator(1, ProfileScreen()),
+          
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -268,15 +268,6 @@ class HomePagePenyewa extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class ProfileScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Profile Screen'),
     );
   }
 }
