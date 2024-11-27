@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 InputDecoration outlinedInputDecoration({
   required String hintText,
@@ -54,8 +55,10 @@ class CustomTextField extends StatefulWidget {
   final TextAlign textAlign;
   final TextStyle? style;
   final bool autofocus;
+  final String? prefixText;
   final bool readOnly;
   final String? errorText;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextField({
     super.key,
@@ -74,7 +77,9 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     this.textAlign = TextAlign.start,
     this.style,
+    this.inputFormatters,
     this.autofocus = false,
+    this.prefixText,
     this.readOnly = false,
     this.errorText,
   });
@@ -111,10 +116,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
       style: widget.style,
       autofocus: widget.autofocus,
       readOnly: widget.readOnly,
+      inputFormatters: widget.inputFormatters,
       decoration: outlinedInputDecoration(
         hintText: widget.hintText,
         suffixIcon: widget.obscureText
-            ? IconButton(
+            ? IconButton( 
                 icon: Icon(
                   _obscureText ? Icons.visibility_off : Icons.visibility,
                   color: Colors.grey,
@@ -128,6 +134,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             : null,
       ).copyWith(
         errorText: widget.errorText,
+        prefixText: widget.prefixText,
         errorStyle: const TextStyle(color: Colors.red),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.0),
