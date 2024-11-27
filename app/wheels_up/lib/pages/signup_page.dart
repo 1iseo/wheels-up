@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:wheels_up/components/custom_text_field.dart';
+import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/services/auth_service.dart';
 
