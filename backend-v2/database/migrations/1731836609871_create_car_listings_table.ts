@@ -12,7 +12,7 @@ export default class extends BaseSchema {
       table.specificType('features', 'text[]').notNullable()
       table.specificType('requirements', 'text[]').notNullable()
       table.integer('price').notNullable()
-      table.string('thumbnail').notNullable()
+      table.specificType('thumbnail', 'bytea').notNullable()
       table.enum('status', ['active', 'rented', 'hidden']).defaultTo('active').notNullable()
       table.integer('poster_id').unsigned().references('id').inTable('users').notNullable()
 

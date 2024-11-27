@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import { CarListingFactory } from '#database/factories/car_listing_factory'
 import { UserFactory } from '#database/factories/user_factory'
 import CarListing from '#models/car_listing'
+import { assert } from '@japa/assert'
 
 test.group('Car Listings Controller', (group) => {
   group.each.setup(async () => {
@@ -34,7 +35,7 @@ test.group('Car Listings Controller', (group) => {
       name: 'Test Car',
       description: 'A great test car',
       price: 500000,
-      thumbnail: 'https://example.com/image.jpg',
+      thumbnail: Buffer.from('test image data').toString('base64'),
       features: ['GPS', 'Leather Seats'],
       requirements: ['Valid License', 'Insurance'],
       location: 'Test City',

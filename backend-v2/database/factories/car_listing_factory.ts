@@ -9,7 +9,7 @@ export const CarListingFactory = factory
       features: faker.lorem.words(5).split(' '),
       requirements: faker.lorem.words(5).split(' '),
       price: faker.number.int({ min: 100000, max: 1000000 }),
-      thumbnail: faker.image.url(),
+      thumbnail: Buffer.from(faker.image.dataUri()),
       status: 'active' as 'active' | 'rented' | 'hidden',
       location: faker.location.city(),
     }
