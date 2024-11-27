@@ -3,7 +3,7 @@ import '../services/auth_service.dart';
 
 enum UserRole {
   pemilik,
-  pembeli,
+  penyewa,
   unknown
 }
 
@@ -15,8 +15,8 @@ class RoleHelper {
     switch (role?.toLowerCase()) {
       case 'pemilik':
         return UserRole.pemilik;
-      case 'pembeli':
-        return UserRole.pembeli;
+      case 'penyewa':
+        return UserRole.penyewa;
       default:
         return UserRole.unknown;
     }
@@ -24,7 +24,7 @@ class RoleHelper {
 
   static Widget roleBasedBuilder({
     required Widget Function() pemilikBuilder,
-    required Widget Function() pembeliBuilder,
+    required Widget Function() penyewaBuilder,
     Widget Function()? unknownBuilder,
   }) {
     return FutureBuilder<UserRole>(
@@ -37,8 +37,8 @@ class RoleHelper {
         switch (snapshot.data) {
           case UserRole.pemilik:
             return pemilikBuilder();
-          case UserRole.pembeli:
-            return pembeliBuilder();
+          case UserRole.penyewa:
+            return penyewaBuilder();
           default:
             return unknownBuilder?.call() ?? 
                    const Center(child: Text('Unknown role'));

@@ -2,9 +2,78 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wheels_up/pages/add_listing.dart';
 import 'package:wheels_up/widgets/home_profile_display.dart';
+import 'package:wheels_up/models/car_listing.dart';
+import 'package:wheels_up/services/car_listing_service.dart';
+import 'package:wheels_up/widgets/car_listing_card.dart';
 
-class HomePagePemilik extends StatelessWidget {
+class HomePagePemilik extends StatefulWidget {
   const HomePagePemilik({super.key});
+
+  @override
+  State<HomePagePemilik> createState() => _HomePagePemilikState();
+}
+
+class _HomePagePemilikState extends State<HomePagePemilik> {
+  final CarListingService _listingService = CarListingService();
+  final ScrollController _scrollController = ScrollController();
+  final List<CarListing> _listings = [];
+  bool _isLoading = false;
+  bool _hasMore = true;
+  int _currentPage = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadListings();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadListings() async {
+    if (_isLoading || !_hasMore) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await _listingService.getListings(
+        page: _currentPage,
+        userId: 1, // Replace with actual user ID from auth
+      );
+
+      final List<CarListing> newListings = response['listings'];
+      final meta = response['meta'];
+
+      setState(() {
+        _listings.addAll(newListings);
+        _currentPage++;
+        _hasMore = newListings.length == meta['perPage'];
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    }
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      _loadListings();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +97,45 @@ class HomePagePemilik extends StatelessWidget {
             children: [
               const HomeProfileDisplay(),
               const SizedBox(height: 24),
-              // Add pemilik (owner) specific content here
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      _listings.clear();
+                      _currentPage = 1;
+                      _hasMore = true;
+                    });
+                    await _loadListings();
+                  },
+                  child: _listings.isEmpty && !_isLoading
+                      ? const Center(
+                          child: Text('No listings found'),
+                        )
+                      : ListView.builder(
+                          controller: _scrollController,
+                          itemCount: _listings.length + (_hasMore ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == _listings.length) {
+                              return _isLoading
+                                  ? const Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    )
+                                  : const SizedBox();
+                            }
+                            final listing = _listings[index];
+                            return CarListingCard(
+                              listing: listing,
+                              onTap: () {
+                                // TODO: Navigate to listing details
+                              },
+                            );
+                          },
+                        ),
+                ),
+              ),
             ],
           ),
         ),
@@ -39,10 +146,18 @@ class HomePagePemilik extends StatelessWidget {
           Icons.add,
           color: Colors.white,
         ),
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return const AddListingPage();
-          }));
+        onPressed: () async {
+          final result = await Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const AddListingPage()),
+          );
+          if (result == true && mounted) {
+            setState(() {
+              _listings.clear();
+              _currentPage = 1;
+              _hasMore = true;
+            });
+            _loadListings();
+          }
         },
       ),
     );

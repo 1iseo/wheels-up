@@ -21,13 +21,16 @@ export default class CarListingsController {
 
   public async createListing({ request, response, auth }: HttpContext) {
     const user = await auth.authenticate()
+    console.log(request.all())
     let payload = await listingValidator.validate(request.all())
     let payloadWithUser = {
       ...payload,
       posterId: user.id,
+      thumbnail: Buffer.from(payload.thumbnail, 'base64')
     }
-
+    console.log("HERE")
     const listing = await CarListing.create(payloadWithUser)
+    console.log(listing)
     return response.json(listing)
   }
 
@@ -41,6 +44,7 @@ export default class CarListingsController {
     }
 
     let payload = await listingUpdateValidator.validate(request.all())
+
     listing.merge(payload)
     await listing.save()
     return response.json(listing)

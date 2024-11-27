@@ -48,6 +48,8 @@ test.group('Car Listings Controller', (group) => {
       name: listingData.name,
       posterId: user.id,
     })
+
+    console.log(response.body())
   })
 
   test('create listing - validates required fields', async ({ client }) => {

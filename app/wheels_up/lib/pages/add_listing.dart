@@ -1,8 +1,41 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
+import 'package:wheels_up/services/car_listing_service.dart';
+
+class CarListingPayload {
+  final String name;
+  final String description;
+  final double price;
+  final String thumbnail;
+  final List<String> features;
+  final List<String> requirements;
+  final String location;
+
+  CarListingPayload({
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.thumbnail,
+    required this.features,
+    required this.requirements,
+    required this.location,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'description': description,
+    'price': price,
+    'thumbnail': thumbnail,
+    'features': features,
+    'requirements': requirements,
+    'location': location,
+  };
+}
 
 class AddListingPage extends StatefulWidget {
   const AddListingPage({Key? key}) : super(key: key);
@@ -14,19 +47,27 @@ class AddListingPage extends StatefulWidget {
 class _AddListingPageState extends State<AddListingPage> {
   final _formKey = GlobalKey<FormState>();
   final _carNameController = TextEditingController();
+  final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
   final _locationController = TextEditingController();
   final _featureController = TextEditingController();
   final _requirementController = TextEditingController();
+  final _listingService = CarListingService();
 
   List<String> _features = [];
   List<String> _requirements = [];
   File? _thumbnailImage;
   final ImagePicker _picker = ImagePicker();
+  bool _isLoading = false;
 
   Future<void> _pickImage() async {
     try {
-      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1920,
+        maxHeight: 1080,
+        imageQuality: 85,
+      );
       if (image != null) {
         setState(() {
           _thumbnailImage = File(image.path);
@@ -69,6 +110,69 @@ class _AddListingPageState extends State<AddListingPage> {
     });
   }
 
+  Future<void> _submitListing() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (_thumbnailImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please add a thumbnail image')),
+      );
+      return;
+    }
+
+    if (_features.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please add at least one feature')),
+      );
+      return;
+    }
+
+    if (_requirements.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please add at least one requirement')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final bytes = await _thumbnailImage!.readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      final listingData = {
+        'name': _carNameController.text,
+        'description': _descriptionController.text,
+        'price': double.parse(_priceController.text.replaceAll(RegExp(r'[^0-9]'), '')),
+        'thumbnail': base64Image,
+        'features': _features,
+        'requirements': _requirements,
+        'location': _locationController.text,
+      };
+
+      await _listingService.createListing(listingData);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Listing created successfully')),
+      );
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   void dispose() {
     _carNameController.dispose();
@@ -76,6 +180,7 @@ class _AddListingPageState extends State<AddListingPage> {
     _locationController.dispose();
     _featureController.dispose();
     _requirementController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -86,7 +191,6 @@ class _AddListingPageState extends State<AddListingPage> {
         surfaceTintColor: Colors.grey.shade800,
         title: const Text(
           "Tambah Listing Baru",
-          
           style: TextStyle(
               fontWeight: FontWeight.w600, fontSize: 18, color: Colors.black),
         ),
@@ -109,6 +213,16 @@ class _AddListingPageState extends State<AddListingPage> {
                   hintText: 'Nama Mobil',
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 16),
+
+                // Description
+                CustomTextField(
+                  controller: _descriptionController,
+                  hintText: 'Deskripsi',
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 3,
+                  textInputAction: TextInputAction.newline,
                 ),
                 const SizedBox(height: 16),
 
@@ -222,26 +336,31 @@ class _AddListingPageState extends State<AddListingPage> {
                 SizedBox(
                   height: 45,
                   child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // TODO: Implement form submission
-                        print('Form is valid');
-                      }
-                    },
+                    onPressed: _isLoading ? null : _submitListing,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text(
-                      'Submit',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : const Text(
+                            'Submit',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ),
               ],

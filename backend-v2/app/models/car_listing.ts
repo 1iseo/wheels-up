@@ -23,7 +23,7 @@ export default class CarListing extends BaseModel {
   declare price: number
 
   @column({ prepare: (value: string) => Buffer.from(value, 'base64'), serialize: (value: Buffer) => value.toString('base64') })
-  declare thumbnail: Buffer
+  declare thumbnail: string | Buffer
 
   @column()
   declare location: string
