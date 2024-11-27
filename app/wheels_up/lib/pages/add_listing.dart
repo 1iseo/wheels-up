@@ -83,8 +83,10 @@ class _AddListingPageState extends State<AddListingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.grey.shade800,
         title: const Text(
           "Tambah Listing Baru",
+          
           style: TextStyle(
               fontWeight: FontWeight.w600, fontSize: 18, color: Colors.black),
         ),
