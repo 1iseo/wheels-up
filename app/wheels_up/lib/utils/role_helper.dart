@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
 enum UserRole {
-  penyedia,
+  pemilik,
   pembeli,
   unknown
 }
@@ -13,8 +13,8 @@ class RoleHelper {
   static Future<UserRole> getCurrentRole() async {
     final role = await _authService.getRole();
     switch (role?.toLowerCase()) {
-      case 'penyedia':
-        return UserRole.penyedia;
+      case 'pemilik':
+        return UserRole.pemilik;
       case 'pembeli':
         return UserRole.pembeli;
       default:
@@ -23,7 +23,7 @@ class RoleHelper {
   }
 
   static Widget roleBasedBuilder({
-    required Widget Function() penyediaBuilder,
+    required Widget Function() pemilikBuilder,
     required Widget Function() pembeliBuilder,
     Widget Function()? unknownBuilder,
   }) {
@@ -35,8 +35,8 @@ class RoleHelper {
         }
 
         switch (snapshot.data) {
-          case UserRole.penyedia:
-            return penyediaBuilder();
+          case UserRole.pemilik:
+            return pemilikBuilder();
           case UserRole.pembeli:
             return pembeliBuilder();
           default:

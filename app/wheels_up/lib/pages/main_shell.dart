@@ -279,8 +279,8 @@ class HomePagePenyewa extends StatelessWidget {
   }
 }
 
-class HomePagePenyedia extends StatelessWidget {
-  const HomePagePenyedia({super.key});
+class HomePagePemilik extends StatelessWidget {
+  const HomePagePemilik({super.key});
 
   @override
   Widget build(BuildContext context) {
