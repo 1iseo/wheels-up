@@ -9,8 +9,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RoleHelper.roleBasedBuilder(
-      pemilikBuilder: () => HomePagePemilik(),
-      penyewaBuilder: () => HomePagePenyewa(),
+      pemilikBuilder: () => const HomePagePemilik(),
+      penyewaBuilder: () => const HomePagePenyewa(),
     );
   }
 }

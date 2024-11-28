@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:wheels_up/services/auth_service.dart';
-import 'package:wheels_up/pages/login_page.dart';
-import 'package:wheels_up/pages/landing_welcome.dart';
-import 'package:wheels_up/utils/role_helper.dart';
 import 'package:wheels_up/pages/profile/profile_page.dart';
 import 'package:wheels_up/widgets/navigation_destinations.dart';
 import 'package:wheels_up/pages/home/home_page.dart';
@@ -39,10 +34,10 @@ class _MainAppShellState extends State<MainAppShell> {
       body: IndexedStack(
         index: _currentIndex,
         children: [
-          _buildNavigator(0, HomePage()),
-          _buildNavigator(1, HomePagePenyewa()),
-          _buildNavigator(2, HomePagePenyewa()),
-          _buildNavigator(3, ProfilePage())
+          _buildNavigator(0, const HomePage()),
+          _buildNavigator(1, const HomePagePenyewa()),
+          _buildNavigator(2, const HomePagePenyewa()),
+          _buildNavigator(3, const ProfilePage())
         ],
       ),
       bottomNavigationBar: NavigationBar(

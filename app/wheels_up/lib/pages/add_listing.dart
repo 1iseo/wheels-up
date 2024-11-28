@@ -38,7 +38,7 @@ class CarListingPayload {
 }
 
 class AddListingPage extends StatefulWidget {
-  const AddListingPage({Key? key}) : super(key: key);
+  const AddListingPage({super.key});
 
   @override
   State<AddListingPage> createState() => _AddListingPageState();
@@ -54,8 +54,8 @@ class _AddListingPageState extends State<AddListingPage> {
   final _requirementController = TextEditingController();
   final _listingService = CarListingService();
 
-  List<String> _features = [];
-  List<String> _requirements = [];
+  final List<String> _features = [];
+  final List<String> _requirements = [];
   File? _thumbnailImage;
   final ImagePicker _picker = ImagePicker();
   bool _isLoading = false;
