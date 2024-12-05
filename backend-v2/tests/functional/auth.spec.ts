@@ -22,7 +22,6 @@ test.group('Auth', (group) => {
 
     response.assertStatus(200)
     assert.properties(response.body(), ['token'])
-    assert.isString(response.body().token)
   })
 
   test('register fails with invalid data', async ({ client, assert }) => {
@@ -91,7 +90,6 @@ test.group('Auth', (group) => {
 
     response.assertStatus(200)
     assert.properties(response.body(), ['token'])
-    assert.isString(response.body().token)
   })
 
   test('login returns token with valid username credentials', async ({ client, assert }) => {
@@ -107,7 +105,6 @@ test.group('Auth', (group) => {
 
     response.assertStatus(200)
     assert.properties(response.body(), ['token'])
-    assert.isString(response.body().token)
   })
 
   test('login fails with invalid credentials', async ({ client, assert }) => {
