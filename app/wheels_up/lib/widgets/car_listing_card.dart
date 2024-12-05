@@ -68,7 +68,7 @@ class CarListingCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    currencyFormat.format(listing.price),
+                    "${currencyFormat.format(listing.price)} / jam",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
