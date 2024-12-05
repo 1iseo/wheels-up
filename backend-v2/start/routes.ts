@@ -25,3 +25,5 @@ router.post('/listings', [CarListingsController, 'createListing'])
 router.get('/listings/:id', [CarListingsController, 'showListing'])
 router.put('/listings/:id', [CarListingsController, 'updateListing'])
 router.delete('/listings/:id', [CarListingsController, 'deleteListing'])
+router.get('/users/current', [AuthController, 'getCurrentUser'])
+

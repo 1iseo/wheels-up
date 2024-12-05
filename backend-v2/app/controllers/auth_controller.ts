@@ -45,4 +45,9 @@ export default class AuthController {
     const token = await User.accessTokens.create(user)
     return token
   }
+
+  async getCurrentUser({ response, auth }: HttpContext) {
+    const user = await auth.authenticate()
+    return response.json(user)
+  }
 }
