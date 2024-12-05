@@ -90,4 +90,20 @@ class CarListingService {
       throw Exception('Failed to search listings: ${e.toString()}');
     }
   }
+
+  Future<CarListing> updateListing(int id, Map<String, dynamic> data) async {
+    try {
+      final response = await _dio.put(
+        '/listings/$id',
+        data: data,
+      );
+
+      if (response.statusCode == 200) {
+        return CarListing.fromJson(response.data);
+      }
+      throw Exception('Failed to update listing');
+    } catch (e) {
+      throw Exception('Failed to update listing: $e');
+    }
+  }
 }

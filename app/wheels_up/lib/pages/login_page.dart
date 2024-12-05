@@ -45,6 +45,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     try {
+      print("LOGGING IN");
       final token = await _authService.login(
         usernameController.text,
         passwordController.text,

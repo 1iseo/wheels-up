@@ -17,14 +17,16 @@ class AuthService {
       });
 
       if (response.statusCode == 200) {
-        final token = response.data['token'];
-        final role = response.data['role'];
+        final token = response.data['token']['token'];
+        final role = response.data['user']['role'];
+        print("ROLE: " + role);
         await _storage.write(key: 'auth_token', value: token);
         await _storage.write(key: 'user_role', value: role);
         return token;
       }
       return null;
     } on DioException catch (e) {
+      print("WHAT");
       if (e.response?.statusCode == 401) {
         throw 'Invalid credentials';
       }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wheels_up/pages/add_listing.dart';
+import 'package:wheels_up/pages/edit_listing.dart';
 import 'package:wheels_up/widgets/home_profile_display.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
@@ -128,8 +129,20 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
                             final listing = _listings[index];
                             return CarListingCard(
                               listing: listing,
-                              onTap: () {
-                                // TODO: Navigate to listing details
+                              onTap: () async {
+                                final result = await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => EditListingPage(listing: listing),
+                                  ),
+                                );
+                                if (result == true && mounted) {
+                                  setState(() {
+                                    _listings.clear();
+                                    _currentPage = 1;
+                                    _hasMore = true;
+                                  });
+                                  _loadListings();
+                                }
                               },
                             );
                           },

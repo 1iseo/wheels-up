@@ -22,7 +22,7 @@ export default class AuthController {
     const password = body.password
     const user = await User.verifyCredentials(uid, password)
     const token = await User.accessTokens.create(user)
-    return token
+    return { token, user }
   }
 
   async register(context: HttpContext) {

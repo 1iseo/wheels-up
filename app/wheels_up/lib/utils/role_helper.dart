@@ -12,6 +12,7 @@ class RoleHelper {
 
   static Future<UserRole> getCurrentRole() async {
     final role = await _authService.getRole();
+    print(role ?? "no role");
     switch (role?.toLowerCase()) {
       case 'pemilik':
         return UserRole.pemilik;
