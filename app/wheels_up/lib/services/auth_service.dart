@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:pocketbase/pocketbase.dart';
-import 'package:wheels_up/config/api_config.dart';
 import 'package:wheels_up/models/user.dart';
 import 'package:wheels_up/services/pocketbase.dart';
 
