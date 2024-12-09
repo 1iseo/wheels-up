@@ -8,10 +8,10 @@ enum UserRole {
 }
 
 class RoleHelper {
-  static final AuthService _authService = AuthService();
+  static final AuthService2 _authService = AuthService2();
 
   static Future<UserRole> getCurrentRole() async {
-    final role = await _authService.getRole();
+    final role = _authService.getRole();
     print(role ?? "no role");
     switch (role?.toLowerCase()) {
       case 'pemilik':

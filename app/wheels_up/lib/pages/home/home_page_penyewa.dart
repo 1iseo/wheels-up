@@ -18,7 +18,7 @@ class HomePagePenyewa extends StatefulWidget {
 class _HomePagePenyewaState extends State<HomePagePenyewa> {
   final CarListingService _listingService = CarListingService();
   final ScrollController _scrollController = ScrollController();
-  final List<CarListing> _listings = [];
+  final List<CarListing2> _listings = [];
   bool _isLoading = false;
   bool _hasMore = true;
   int _currentPage = 1;
@@ -50,18 +50,17 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
 
     try {
       if (_isSearching) {
-        final searchResults =
-            await _listingService.searchListings(_searchController.text);
+        // final searchResults =
+            // await _listingService.searchListings(_searchController.text);
         setState(() {
           _listings.clear();
-          _listings.addAll(searchResults);
+          // _listings.addAll(searchResults);
           _isLoading = false;
           _hasMore = false; // No pagination for search results yet
         });
       } else {
-        final response = await _listingService.getListings(page: _currentPage);
-        final List<CarListing> newListings = response['listings'];
-        final meta = response['meta'];
+      final response = await CarListingService2().getListings(page: _currentPage);
+      final List<CarListing2> newListings = response.items;
 
         setState(() {
           if (_currentPage == 1) {
@@ -69,7 +68,7 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
           }
           _listings.addAll(newListings);
           _currentPage++;
-          _hasMore = newListings.length == meta['perPage'];
+          _hasMore = newListings.length == response.perPage;
           _isLoading = false;
         });
       }

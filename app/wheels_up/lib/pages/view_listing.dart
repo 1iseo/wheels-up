@@ -2,29 +2,30 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:wheels_up/config/api_config.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:wheels_up/widgets/home_profile_display.dart';
 
 class ImageDisplay extends StatelessWidget {
-  final String imageString;
+  final String imageUrl;
 
-  const ImageDisplay({super.key, required this.imageString});
+  const ImageDisplay({super.key, required this.imageUrl});
 
   Image base64ImageStringToImage() {
-    return Image.memory(base64Decode(imageString), fit: BoxFit.cover);
+    return Image.memory(base64Decode(imageUrl), fit: BoxFit.cover);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (imageString.isNotEmpty) {
+    if (imageUrl.isNotEmpty) {
       // Create a border for the image
       return Container(
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(12)),
           child: AspectRatio(
             aspectRatio: 4 / 3,
-            child: Image.memory(
-              base64Decode(imageString),
+            child: Image.network(
+              imageUrl,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
@@ -44,7 +45,7 @@ class ImageDisplay extends StatelessWidget {
 }
 
 class ViewListing extends StatelessWidget {
-  final CarListing listing;
+  final CarListing2 listing;
 
   const ViewListing({super.key, required this.listing});
 
@@ -72,13 +73,17 @@ class ViewListing extends StatelessWidget {
               const SizedBox(height: 24),
               Flexible(
                   child: ListView(children: [
-                ImageDisplay(imageString: listing.thumbnail)
+                ImageDisplay(
+                  imageUrl:
+                      "${ApiConfig.pocketbaseUrl}/api/files/listings/${listing.id}/${listing.thumbnail}",
+                )
               ])),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -88,7 +93,7 @@ class ViewListing extends StatelessWidget {
                               TextStyle(color: Colors.grey[800], fontSize: 14),
                         ),
                         Text(
-                          "Rp ${listing.price.toStringAsFixed(0)}",
+                          "Rp ${listing.pricePerHour.toStringAsFixed(0)}",
                           style: TextStyle(
                               fontSize: 22,
                               letterSpacing: 1.2,

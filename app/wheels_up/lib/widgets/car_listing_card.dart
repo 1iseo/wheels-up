@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:wheels_up/config/api_config.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:intl/intl.dart';
 
 class CarListingCard extends StatelessWidget {
-  final CarListing listing;
+  final CarListing2 listing;
   final VoidCallback? onTap;
 
   const CarListingCard({
@@ -38,8 +39,8 @@ class CarListingCard extends StatelessWidget {
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: AspectRatio(
                 aspectRatio: 16 / 9,
-                child: Image.memory(
-                  base64Decode(listing.thumbnail),
+                child: Image.network(
+                  "${ApiConfig.pocketbaseUrl}/api/files/listings/${listing.id}/${listing.thumbnail}",
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -68,7 +69,7 @@ class CarListingCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "${currencyFormat.format(listing.price)} / jam",
+                    "${currencyFormat.format(listing.pricePerHour)} / jam",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wheels_up/pages/login_page.dart';
 import 'package:wheels_up/services/auth_service.dart';
-import 'package:wheels_up/services/user_service.dart';
 import 'package:wheels_up/models/user.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -12,8 +11,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final AuthService _authService = AuthService();
-  User? _user;
+  final AuthService2 _authService = AuthService2();
+  User2? _user;
   bool _isLoading = true;
   String? _error;
 
@@ -25,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _loadUser() async {
     try {
-      final user = await UserService.getCurrentUser();
+      final user = _authService.getCurrentUser();
       print("YOOO");
       setState(() {
         _user = user;
@@ -40,7 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _handleLogout() async {
-    await _authService.logout();
+    _authService.logout();
     if (!mounted) return;
 
     // Navigate to login page and clear the entire navigation stack

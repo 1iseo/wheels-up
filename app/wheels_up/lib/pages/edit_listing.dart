@@ -5,7 +5,7 @@ import 'package:wheels_up/services/car_listing_service.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 
 class EditListingPage extends StatefulWidget {
-  final CarListing listing;
+  final CarListing2 listing;
 
   const EditListingPage({Key? key, required this.listing}) : super(key: key);
 
@@ -36,9 +36,9 @@ class _EditListingPageState extends State<EditListingPage> {
   void _initializeFields() {
     _carNameController.text = widget.listing.name;
     _descriptionController.text = widget.listing.description;
-    _priceController.text = widget.listing.price.toStringAsFixed(0);
+    _priceController.text = widget.listing.pricePerHour.toStringAsFixed(0);
     _locationController.text = widget.listing.location;
-    _features = List<String>.from(widget.listing.features);
+    // _features = List<String>.from(widget.listing.features);
     _requirements = List<String>.from(widget.listing.requirements);
   }
 
@@ -94,7 +94,7 @@ class _EditListingPageState extends State<EditListingPage> {
           'requirements': _requirements,
         };
 
-        await _listingService.updateListing(widget.listing.id, updatedListing);
+        // await _listingService.updateListing(widget.listing.id, updatedListing);
         
         if (mounted) {
           Navigator.of(context).pop(true);

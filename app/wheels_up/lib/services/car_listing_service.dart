@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:pocketbase/pocketbase.dart';
+import 'package:wheels_up/services/pocketbase.dart';
 import '../models/car_listing.dart';
 import '../config/api_config.dart';
 import 'auth_service.dart';
@@ -106,4 +108,44 @@ class CarListingService {
       throw Exception('Failed to update listing: $e');
     }
   }
+}
+
+class ListingResponse {
+  final int page;
+  final int perPage;
+  final int totalPages;
+  final int totalItems;
+  final List<CarListing2> items;
+
+  ListingResponse({
+    required this.page,
+    required this.perPage,
+    required this.totalPages,
+    required this.totalItems,
+    required this.items,
+  });
+
+  factory ListingResponse.fromJson(Map<String, dynamic> json) {
+    return ListingResponse(
+      page: json['page'],
+      perPage: json['perPage'],
+      totalPages: json['totalPages'],
+      totalItems: json['totalItems'],
+      items: (json['items'] as List).map((item) => CarListing2.fromJson(item)).toList(),
+    );
+  }
+}
+
+
+class CarListingService2 {
+  final PocketBase pb = PocketbaseSingleton().pocketbase;
+
+  Future<ListingResponse> getListings({int page = 1}) async {
+    try {
+      final response = await pb.collection('listings').getList(page: page, perPage: 5);
+      return ListingResponse.fromJson(response.toJson());
+    } catch (e) {
+      throw Exception('Failed to fetch listings: $e');
+    }
+  } 
 }

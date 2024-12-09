@@ -42,3 +42,45 @@ class CarListing {
     );
   }
 }
+
+class CarListing2 {
+  final String id;
+  final String name;
+  final String description;
+  final double pricePerHour;
+  final String thumbnail;
+  final List<String> requirements;
+  final String location;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String posterId;
+
+  CarListing2({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.pricePerHour,
+    required this.thumbnail,
+    required this.requirements,
+    required this.location,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.posterId,
+  });
+
+  factory CarListing2.fromJson(Map<String, dynamic> json) {
+
+    return CarListing2(
+      id: json['id'],
+      name: json['title'],
+      description: json['description'],
+      pricePerHour: json['pricePerHour'].toDouble(),
+      thumbnail: json['thumbnail'],
+      requirements: List<String>.from(json['requirements']),
+      location: json['location'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      posterId: json['posterId'],
+    );
+  }
+}

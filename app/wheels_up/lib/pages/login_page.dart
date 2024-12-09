@@ -15,7 +15,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final _authService = AuthService();
+  final _authService = AuthService2();
   bool _isLoading = false;
 
   String? usernameError;
@@ -46,20 +46,17 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       print("LOGGING IN");
-      final token = await _authService.login(
+      await _authService.login(
         usernameController.text,
         passwordController.text,
       );
 
-      if (token != null) {
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainAppShell()),
-          );
-        }
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainAppShell()),
+      );
     } catch (e) {
+      print(e.toString());
       setState(() {
         passwordError = e.toString();
       });
@@ -139,7 +136,8 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: _isLoading ? null : _handleLogin,
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 48),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 48),
                     backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),

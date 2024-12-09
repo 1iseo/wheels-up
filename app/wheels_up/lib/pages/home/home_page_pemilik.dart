@@ -17,7 +17,7 @@ class HomePagePemilik extends StatefulWidget {
 class _HomePagePemilikState extends State<HomePagePemilik> {
   final CarListingService _listingService = CarListingService();
   final ScrollController _scrollController = ScrollController();
-  final List<CarListing> _listings = [];
+  final List<CarListing2> _listings = [];
   bool _isLoading = false;
   bool _hasMore = true;
   int _currentPage = 1;
@@ -43,18 +43,14 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
     });
 
     try {
-      final response = await _listingService.getListings(
-        page: _currentPage,
-        userId: 1, // Replace with actual user ID from auth
-      );
-
-      final List<CarListing> newListings = response['listings'];
-      final meta = response['meta'];
+      final response = await CarListingService2().getListings(page: _currentPage);
+      print(response);
+      final List<CarListing2> newListings = response.items;
 
       setState(() {
         _listings.addAll(newListings);
         _currentPage++;
-        _hasMore = newListings.length == meta['perPage'];
+        _hasMore = newListings.length == response.perPage;
         _isLoading = false;
       });
     } catch (e) {

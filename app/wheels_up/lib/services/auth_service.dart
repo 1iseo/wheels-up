@@ -1,5 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:pocketbase/pocketbase.dart';
+import 'package:wheels_up/config/api_config.dart';
+import 'package:wheels_up/models/user.dart';
+import 'package:wheels_up/services/pocketbase.dart';
 
 class AuthService {
   final Dio _dio = Dio(BaseOptions(
@@ -12,7 +16,10 @@ class AuthService {
   Future<String?> login(String identifier, String password) async {
     try {
       final response = await _dio.post('/auth/login', data: {
-        if (identifier.contains('@')) 'email': identifier else 'username': identifier,
+        if (identifier.contains('@'))
+          'email': identifier
+        else
+          'username': identifier,
         'password': password,
       });
 
@@ -79,5 +86,49 @@ class AuthService {
 
   Future<String?> getRole() async {
     return await _storage.read(key: 'user_role');
+  }
+}
+
+class AuthService2 {
+  final pb = PocketbaseSingleton().pocketbase;
+
+  Future<void> login(String identifier, String password) async {
+    try {
+      final response = await pb.collection('users').authWithPassword(
+            identifier,
+            password,
+          );
+
+      if (response.token == "") {
+        throw 'Invalid credentials';
+      }
+    } catch (e) {
+      throw Exception("Error when logging in: $e");
+    }
+  }
+
+  Future<void> register(CreateUserRequest body) async {
+    try {
+      await pb.collection('users').create(body: body.toJson());
+      await pb.collection('users').authWithPassword(body.email, body.password);
+    } catch (e) {
+      throw Exception('An error occurred during registration: $e');
+    }
+  }
+
+  void logout() {
+    pb.authStore.clear();
+  }
+
+  String? getRole() {
+    User2? user = getCurrentUser();
+    return user?.role;
+  }
+
+  User2? getCurrentUser() {
+    if (pb.authStore.record == null) {
+      return null;
+    }
+    return User2.fromJson(pb.authStore.record!.data);
   }
 }

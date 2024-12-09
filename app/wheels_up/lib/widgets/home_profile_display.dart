@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wheels_up/services/auth_service.dart';
 import '../models/user.dart';
 import '../services/user_service.dart';
 
@@ -10,7 +11,8 @@ class HomeProfileDisplay extends StatefulWidget {
 }
 
 class _HomeProfileDisplayState extends State<HomeProfileDisplay> {
-  User? _user;
+  final AuthService2 _authService = AuthService2();
+  User2? _user;
   bool _isLoading = true;
   String? _error;
 
@@ -22,7 +24,7 @@ class _HomeProfileDisplayState extends State<HomeProfileDisplay> {
 
   Future<void> _loadUser() async {
     try {
-      final user = await UserService.getCurrentUser();
+      final user = _authService.getCurrentUser();
       setState(() {
         _user = user;
         _isLoading = false;
