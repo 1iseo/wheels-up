@@ -22,6 +22,28 @@ class TriangleClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
+class HeroImage extends StatelessWidget {
+  const HeroImage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(maxHeight: 500),
+      child: Transform.translate(
+        offset: const Offset(0, 0),
+        child: ClipPath(
+          clipper: TriangleClipper(),
+          child: Image.asset(
+            'assets/jeep.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class LandingWelcome extends StatelessWidget {
   const LandingWelcome({super.key});
 
@@ -34,32 +56,8 @@ class LandingWelcome extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         // space between
         children: [
-          Flexible(
-            flex: 4,
-            fit: FlexFit.tight,
-            child: Column(
-              children: [
-                Flexible(
-                  flex: 1,
-                  fit: FlexFit.tight,
-                  child: Container(
-                    width: double.infinity,
-                    constraints: const BoxConstraints(maxHeight: 450),
-                    child: Transform.translate(
-                      offset: const Offset(0, 0),
-                      child: ClipPath(
-                        clipper: TriangleClipper(),
-                        child: Image.asset(
-                          'assets/jeep.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const HeroImage(),
+          const SizedBox(height: 12),
           Flexible(
             flex: 3,
             fit: FlexFit.tight,
@@ -94,14 +92,20 @@ class LandingWelcome extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => const LoginPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 42),
                           shape: const StadiumBorder(),
                           foregroundColor: Colors.white,
                           backgroundColor: Colors.black),
-                      child: const Text('Let\'s Go!'),
+                      child: const Text(
+                        'Let\'s Go!',
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
                     const SizedBox(
                       height: 8,
@@ -110,7 +114,7 @@ class LandingWelcome extends StatelessWidget {
                       'User Manual',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 8,
+                        fontSize: 12,
                         fontWeight: FontWeight.normal,
                         color: Colors.blue,
                       ),
