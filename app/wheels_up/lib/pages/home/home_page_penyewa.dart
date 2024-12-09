@@ -6,6 +6,7 @@ import 'package:wheels_up/widgets/car_listing_grid.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
 import 'package:wheels_up/utils/debouncer.dart';
+import 'package:wheels_up/pages/view_listing.dart'; // Import ViewListing
 
 class HomePagePenyewa extends StatefulWidget {
   const HomePagePenyewa({super.key});
@@ -156,7 +157,16 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
                   child: CarListingGrid(
                     listings: _listings,
                     isLoading: _isLoading,
+                    hasMore: _hasMore,
                     scrollController: _scrollController,
+                    onCardTap: (listing) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewListing(listing: listing),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),

@@ -5,7 +5,7 @@ import 'package:wheels_up/pages/edit_listing.dart';
 import 'package:wheels_up/widgets/home_profile_display.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
-import 'package:wheels_up/widgets/car_listing_card.dart';
+import 'package:wheels_up/widgets/car_listing_grid.dart';
 
 class HomePagePemilik extends StatefulWidget {
   const HomePagePemilik({super.key});
@@ -108,45 +108,27 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
                     });
                     await _loadListings();
                   },
-                  child: _listings.isEmpty && !_isLoading
-                      ? const Center(
-                          child: Text('No listings found'),
-                        )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          itemCount: _listings.length + (_hasMore ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index == _listings.length) {
-                              return _isLoading
-                                  ? const Center(
-                                      child: Padding(
-                                        padding: EdgeInsets.all(16.0),
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    )
-                                  : const SizedBox();
-                            }
-                            final listing = _listings[index];
-                            return CarListingCard(
-                              listing: listing,
-                              onTap: () async {
-                                final result = await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => EditListingPage(listing: listing),
-                                  ),
-                                );
-                                if (result == true && mounted) {
-                                  setState(() {
-                                    _listings.clear();
-                                    _currentPage = 1;
-                                    _hasMore = true;
-                                  });
-                                  _loadListings();
-                                }
-                              },
-                            );
-                          },
+                  child: CarListingGrid(
+                    listings: _listings,
+                    isLoading: _isLoading,
+                    hasMore: _hasMore,
+                    scrollController: _scrollController,
+                    onCardTap: (listing) async {
+                      final result = await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => EditListingPage(listing: listing),
                         ),
+                      );
+                      if (result == true && mounted) {
+                        setState(() {
+                          _listings.clear();
+                          _currentPage = 1;
+                          _hasMore = true;
+                        });
+                        _loadListings();
+                      }
+                    },
+                  ),
                 ),
               ),
             ],
