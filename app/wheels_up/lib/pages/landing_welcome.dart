@@ -50,6 +50,7 @@ class LandingWelcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         body: SizedBox(
       width: double.infinity,
       child: Column(
