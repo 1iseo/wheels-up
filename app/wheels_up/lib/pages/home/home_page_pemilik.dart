@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:wheels_up/pages/add_listing.dart';
 import 'package:wheels_up/pages/edit_listing.dart';
 import 'package:wheels_up/widgets/home_profile_display.dart';
@@ -15,7 +16,7 @@ class HomePagePemilik extends StatefulWidget {
 }
 
 class _HomePagePemilikState extends State<HomePagePemilik> {
-  final CarListingService _listingService = CarListingService();
+  late final CarListingService _listingService;
   final ScrollController _scrollController = ScrollController();
   final List<CarListing2> _listings = [];
   bool _isLoading = false;
@@ -25,6 +26,7 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
   @override
   void initState() {
     super.initState();
+    _listingService = Provider.of<CarListingService>(context, listen: false);
     _loadListings();
     _scrollController.addListener(_onScroll);
   }
@@ -43,7 +45,7 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
     });
 
     try {
-      final response = await CarListingService().getListings(page: _currentPage);
+      final response = await _listingService.getListings(page: _currentPage);
       print(response);
       final List<CarListing2> newListings = response.items;
 
@@ -112,7 +114,8 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
                     onCardTap: (listing) async {
                       final result = await Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => EditListingPage(listing: listing),
+                          builder: (context) =>
+                              EditListingPage(listing: listing),
                         ),
                       );
                       if (result == true && mounted) {

@@ -6,6 +6,7 @@ import 'package:wheels_up/models/user.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
   final void Function(bool) notifyAuthChanged;
@@ -16,6 +17,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
@@ -23,7 +25,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  final _authService = AuthService2();
+  late final AuthService2 _authService;
   final pb = PocketBase(ApiConfig.pocketbaseUrl);
 
   bool _isLoading = false;
@@ -35,6 +37,12 @@ class _SignUpPageState extends State<SignUpPage> {
   String? confirmPasswordError;
 
   String selectedRole = 'penyewa'; // Default value
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = Provider.of<AuthService2>(context, listen: false);
+  }
 
   Future<void> _handleSignup() async {
     setState(() {

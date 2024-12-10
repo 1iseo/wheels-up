@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:wheels_up/widgets/home_profile_display.dart';
 import 'package:wheels_up/widgets/search_bar.dart' as sb;
 import 'package:wheels_up/widgets/car_listing_grid.dart';
@@ -19,6 +20,7 @@ class HomePagePenyewa extends StatefulWidget {
 class _HomePagePenyewaState extends State<HomePagePenyewa> {
   final ScrollController _scrollController = ScrollController();
   final List<CarListing2> _listings = [];
+  late CarListingService _listingService;
   bool _isLoading = false;
   bool _hasMore = true;
   int _currentPage = 1;
@@ -29,6 +31,7 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
   @override
   void initState() {
     super.initState();
+    _listingService = Provider.of<CarListingService>(context, listen: false);
     _loadListings();
     _scrollController.addListener(_onScroll);
   }
@@ -59,8 +62,7 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
           _hasMore = false; // No pagination for search results yet
         });
       } else {
-        final response =
-            await CarListingService().getListings(page: _currentPage);
+        final response = await _listingService.getListings(page: _currentPage);
         final List<CarListing2> newListings = response.items;
 
         setState(() {

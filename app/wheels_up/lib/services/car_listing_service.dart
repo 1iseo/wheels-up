@@ -99,7 +99,10 @@ class UpdateCarListingRequest {
 }
 
 class CarListingService {
-  final PocketBase pb = PocketbaseSingleton().pocketbase;
+  final PocketBase pb;
+  final AuthService2 authService;
+
+  CarListingService({required this.pb, required this.authService});
 
   Future<ListingResponse> getListings({int page = 1}) async {
     try {
@@ -169,7 +172,7 @@ class CarListingService {
       var listing = await pb.collection('listings').getOne(id);
       var posterId = listing.get('posterId');
 
-      if (AuthService2().getCurrentUser()?.id != posterId) {
+      if ((await authService.getCurrentUser())?.id != posterId) {
         throw Exception('Not authorized to delete this listing');
       }
       await pb.collection('listings').delete(id);

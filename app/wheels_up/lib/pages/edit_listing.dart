@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
@@ -22,7 +23,7 @@ class _EditListingPageState extends State<EditListingPage> {
   final _priceController = TextEditingController();
   final _locationController = TextEditingController();
   final _requirementController = TextEditingController();
-  final _listingService = CarListingService();
+  late final CarListingService _listingService;
   final ImagePicker _picker = ImagePicker();
 
   List<String> _requirements = [];
@@ -32,6 +33,7 @@ class _EditListingPageState extends State<EditListingPage> {
   @override
   void initState() {
     super.initState();
+    _listingService = Provider.of<CarListingService>(context, listen: false);
     _initializeFields();
   }
 

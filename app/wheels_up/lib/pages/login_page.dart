@@ -5,6 +5,7 @@ import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/pages/signup_page.dart';
 import 'package:wheels_up/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   final void Function(bool) notifyAuthChanged;
@@ -16,10 +17,18 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final _authService = AuthService2();
+  final _formKey = GlobalKey<FormState>();
+  final _identifierController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _isLoading = false;
+
+  late final AuthService2 _authService;
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = Provider.of<AuthService2>(context, listen: false);
+  }
 
   String? usernameError;
   String? passwordError;
@@ -31,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    if (usernameController.text.isEmpty) {
+    if (_identifierController.text.isEmpty) {
       setState(() {
         usernameError = 'Please enter username or email';
         _isLoading = false;
@@ -39,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    if (passwordController.text.isEmpty) {
+    if (_passwordController.text.isEmpty) {
       setState(() {
         passwordError = 'Please enter password';
         _isLoading = false;
@@ -50,8 +59,8 @@ class _LoginPageState extends State<LoginPage> {
     try {
       print("LOGGING IN");
       await _authService.login(
-        usernameController.text,
-        passwordController.text,
+        _identifierController.text,
+        _passwordController.text,
       );
 
       widget.notifyAuthChanged(true);
@@ -110,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 CustomTextField(
-                  controller: usernameController,
+                  controller: _identifierController,
                   hintText: "Username or Email",
                   errorText: usernameError,
                   keyboardType: TextInputType.text,
@@ -118,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
-                  controller: passwordController,
+                  controller: _passwordController,
                   hintText: "Password",
                   errorText: passwordError,
                   obscureText: true,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
@@ -20,12 +21,20 @@ class _AddListingPageState extends State<AddListingPage> {
   final _priceController = TextEditingController();
   final _locationController = TextEditingController();
   final _requirementController = TextEditingController();
-  final _listingService = CarListingService();
+  late CarListingService _listingService; //();
+  late AuthService2 _authService; 
 
   final List<String> _requirements = [];
   File? _thumbnailImage;
   final ImagePicker _picker = ImagePicker();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _listingService = Provider.of<CarListingService>(context, listen: false);
+    _authService = Provider.of<AuthService2>(context, listen: false);
+  }
 
   Future<void> _pickImage() async {
     try {
@@ -96,7 +105,7 @@ class _AddListingPageState extends State<AddListingPage> {
         requirements: _requirements,
         thumbnail: bytes,
         thumbnailFileName: fileName,
-        posterId: AuthService2().getCurrentUser()!.id,
+        posterId: (await _authService.getCurrentUser())!.id,
       );
 
       await _listingService.createListing(createCarListingData);

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:pocketbase/pocketbase.dart';
 import 'package:wheels_up/models/user.dart';
 import 'package:wheels_up/services/pocketbase.dart';
 
@@ -88,7 +91,11 @@ class AuthService {
 }
 
 class AuthService2 {
-  final pb = PocketbaseSingleton().pocketbase;
+  final PocketBase pb;
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  User2? _currentUser;
+
+  AuthService2({required this.pb});
 
   Future<void> login(String identifier, String password) async {
     try {
@@ -100,6 +107,7 @@ class AuthService2 {
       if (response.token == "") {
         throw 'Invalid credentials';
       }
+      pb.authStore.save(response.token, response.record);
     } catch (e) {
       throw Exception("Error when logging in: $e");
     }
@@ -114,19 +122,35 @@ class AuthService2 {
     }
   }
 
-  void logout() {
+  Future<void> logout() async {
+    _currentUser = null;
     pb.authStore.clear();
+    await secureStorage.delete(key: 'pb_data');
   }
 
-  String? getRole() {
-    User2? user = getCurrentUser();
+  Future<String?> getRole() async {
+    User2? user = await getCurrentUser();
     return user?.role;
   }
 
-  User2? getCurrentUser() {
+  Future<User2?> getCurrentUser() async {
+    if (_currentUser != null) {
+      return _currentUser;
+    }
+
     if (pb.authStore.record == null) {
+      String? data = await secureStorage.read(key: 'pb_data');
+      if (data != null && data.isNotEmpty) {
+        final decoded = jsonDecode(data);
+        final user = User2.fromJson(decoded['model'] as Map<String, dynamic>);
+        _currentUser = user;
+        return user;
+      }
       return null;
     }
-    return User2.fromJson(pb.authStore.record!.data);
+
+    final user = User2.fromJson(pb.authStore.record!.toJson());
+    _currentUser = user;
+    return user;
   }
 }

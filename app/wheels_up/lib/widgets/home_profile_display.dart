@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wheels_up/services/auth_service.dart';
 import '../models/user.dart';
 import '../services/user_service.dart';
@@ -11,7 +12,7 @@ class HomeProfileDisplay extends StatefulWidget {
 }
 
 class _HomeProfileDisplayState extends State<HomeProfileDisplay> {
-  final AuthService2 _authService = AuthService2();
+  late final AuthService2 _authService;
   User2? _user;
   bool _isLoading = true;
   String? _error;
@@ -19,12 +20,13 @@ class _HomeProfileDisplayState extends State<HomeProfileDisplay> {
   @override
   void initState() {
     super.initState();
+    _authService = Provider.of<AuthService2>(context, listen: false);
     _loadUser();
   }
 
   Future<void> _loadUser() async {
     try {
-      final user = _authService.getCurrentUser();
+      final user = await _authService.getCurrentUser();
       setState(() {
         _user = user;
         _isLoading = false;
@@ -68,7 +70,8 @@ class _HomeProfileDisplayState extends State<HomeProfileDisplay> {
                 else
                   Text(
                     _user?.fullName ?? 'Guest',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
                   ),
               ],
             ),
