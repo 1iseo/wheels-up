@@ -128,6 +128,7 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
         centerTitle: true,
         toolbarHeight: 40,
         scrolledUnderElevation: 0.0,
+        surfaceTintColor: Colors.transparent,
         title: Container(
           constraints: const BoxConstraints(maxWidth: 100),
           child: SvgPicture.asset('assets/wheelsup_text_logo.svg'),

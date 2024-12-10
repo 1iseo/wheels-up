@@ -24,6 +24,8 @@ class CarListingCard extends StatelessWidget {
     );
 
     return Card(
+      surfaceTintColor: Colors.white,
+      color: Colors.white,
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),

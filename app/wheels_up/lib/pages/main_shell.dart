@@ -16,7 +16,6 @@ import 'package:wheels_up/pages/home/home_page_penyewa.dart';
 final GlobalKey<NavigatorState> rootKey =
     GlobalKey<NavigatorState>(debugLabel: "root");
 
-
 class MainAppShell2 extends StatelessWidget {
   MainAppShell2({super.key});
 
@@ -26,6 +25,8 @@ class MainAppShell2 extends StatelessWidget {
       builder: (context, state, navigationShell) {
         return Scaffold(
           bottomNavigationBar: NavigationBar(
+            surfaceTintColor: Colors.grey.shade300,
+            backgroundColor: Colors.white,
             labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
             selectedIndex: navigationShell.currentIndex,
             onDestinationSelected: (int index) =>
