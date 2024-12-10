@@ -143,22 +143,19 @@ class CarListingService {
       String id, UpdateCarListingRequest request) async {
     try {
       final body = request.toJson();
+      final files = List<http.MultipartFile>.empty();
       // If thumbnail is not null, thumbnailName is also not null
-      final files = request.thumbnail != null
-          ? [
-              http.MultipartFile.fromBytes(
-                'thumbnail',
-                request.thumbnail!,
-                filename: request.thumbnailFileName,
-              )
-            ]
-          : [] as List<http.MultipartFile>;
+      if (request.thumbnail != null) {
+        files.add(
+          http.MultipartFile.fromBytes(
+            'thumbnail',
+            request.thumbnail!,
+            filename: request.thumbnailFileName,
+          ),
+        );
+      }
 
-      final response = await pb.collection('listings').update(
-            id,
-            body: body,
-            files: files,
-          );
+      final response = await pb.collection('listings').update(id, body: body, files: files);
 
       return CarListing2.fromJson(response.toJson());
     } catch (e) {
