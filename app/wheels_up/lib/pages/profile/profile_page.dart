@@ -5,7 +5,9 @@ import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/models/user.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final void Function(bool) notifyAuthChanged;
+
+  const ProfilePage({super.key, required this.notifyAuthChanged});
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -42,11 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _authService.logout();
     if (!mounted) return;
 
-    // Navigate to login page and clear the entire navigation stack
-    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-      (route) => false,
-    );
+    widget.notifyAuthChanged(false);
   }
 
   @override

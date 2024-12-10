@@ -4,47 +4,29 @@ import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/services/auth_service.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const AuthWrapper());
 }
 
-class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  State<AuthWrapper> createState() => _AuthWrapperState();
 }
 
-class _MainAppState extends State<MainApp> {
-  final AuthService _authService = AuthService();
-  bool _isLoading = true;
+class _AuthWrapperState extends State<AuthWrapper> {
   bool _isAuthenticated = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _checkAuthStatus();
-  }
-
-  Future<void> _checkAuthStatus() async {
-    final token = await _authService.getToken();
+  void _handleAuthChanged(bool isAuthenticated) {
     setState(() {
-      _isAuthenticated = token != null;
-      _isLoading = false;
+      _isAuthenticated = isAuthenticated;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: _isLoading
-          ? const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : _isAuthenticated
-              ? const MainAppShell()
-              : const LandingWelcome(),
-    );
+    return MainAppShell2(
+        isAuthenticated: _isAuthenticated,
+        onAuthenticationUpdate: _handleAuthChanged);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wheels_up/widgets/home_profile_display.dart';
 import 'package:wheels_up/widgets/search_bar.dart' as sb;
 import 'package:wheels_up/widgets/car_listing_grid.dart';
@@ -16,7 +17,6 @@ class HomePagePenyewa extends StatefulWidget {
 }
 
 class _HomePagePenyewaState extends State<HomePagePenyewa> {
-  final CarListingService _listingService = CarListingService();
   final ScrollController _scrollController = ScrollController();
   final List<CarListing2> _listings = [];
   bool _isLoading = false;
@@ -51,7 +51,7 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
     try {
       if (_isSearching) {
         // final searchResults =
-            // await _listingService.searchListings(_searchController.text);
+        // await _listingService.searchListings(_searchController.text);
         setState(() {
           _listings.clear();
           // _listings.addAll(searchResults);
@@ -59,8 +59,9 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
           _hasMore = false; // No pagination for search results yet
         });
       } else {
-      final response = await CarListingService2().getListings(page: _currentPage);
-      final List<CarListing2> newListings = response.items;
+        final response =
+            await CarListingService().getListings(page: _currentPage);
+        final List<CarListing2> newListings = response.items;
 
         setState(() {
           if (_currentPage == 1) {
@@ -110,7 +111,8 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
     if (isQueryEmpty) {
       _loadListings(); // Clear the results immediately for empty queries
     } else {
-      _debouncer(() => _loadListings()); // Throttle the search for non-empty queries
+      _debouncer(
+          () => _loadListings()); // Throttle the search for non-empty queries
     }
   }
 
@@ -159,12 +161,7 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
                     hasMore: _hasMore,
                     scrollController: _scrollController,
                     onCardTap: (listing) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ViewListing(listing: listing),
-                        ),
-                      );
+                      GoRouter.of(context).go('/listing', extra: listing);
                     },
                   ),
                 ),

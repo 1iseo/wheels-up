@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wheels_up/pages/login_page.dart';
 
 class TriangleClipper extends CustomClipper<Path> {
@@ -52,81 +53,78 @@ class LandingWelcome extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.white,
         body: SizedBox(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        // space between
-        children: [
-          const HeroImage(),
-          const SizedBox(height: 12),
-          Flexible(
-            flex: 3,
-            fit: FlexFit.tight,
-            child: Center(
-              child: Container(
-                padding: const EdgeInsetsDirectional.fromSTEB(8, 16, 8, 24),
-                child: Column(
-                  children: [
-                    const Text(
-                      'Welcome to',
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // space between
+            children: [
+              const HeroImage(),
+              const SizedBox(height: 12),
+              Flexible(
+                flex: 3,
+                fit: FlexFit.tight,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsetsDirectional.fromSTEB(8, 16, 8, 24),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Welcome to',
+                          style: TextStyle(
+                            fontSize: 24,
+                          ),
+                        ),
+                        ConstrainedBox(
+                          constraints:
+                              const BoxConstraints(minWidth: 30, maxWidth: 250),
+                          child: SvgPicture.asset(
+                            'assets/wheelsup_text_logo.svg',
+                          ),
+                        ),
+                        const Text(
+                          'Offroad Anytime, Anywhere. \nBooking Mudah, Petualangan Tak Terbatas.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton(
+                          onPressed: () {
+                            GoRouter.of(context).go('/login');
+                          },
+                          style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 42),
+                              shape: const StadiumBorder(),
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.black),
+                          child: const Text(
+                            'Let\'s Go!',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        const Text(
+                          'User Manual',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ],
                     ),
-                    ConstrainedBox(
-                      constraints:
-                          const BoxConstraints(minWidth: 30, maxWidth: 250),
-                      child: SvgPicture.asset(
-                        'assets/wheelsup_text_logo.svg',
-                      ),
-                    ),
-                    const Text(
-                      'Offroad Anytime, Anywhere. \nBooking Mudah, Petualangan Tak Terbatas.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 42),
-                          shape: const StadiumBorder(),
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.black),
-                      child: const Text(
-                        'Let\'s Go!',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    const Text(
-                      'User Manual',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    ));
+        ));
   }
 }

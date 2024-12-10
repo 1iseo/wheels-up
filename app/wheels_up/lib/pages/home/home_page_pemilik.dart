@@ -43,7 +43,7 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
     });
 
     try {
-      final response = await CarListingService2().getListings(page: _currentPage);
+      final response = await CarListingService().getListings(page: _currentPage);
       print(response);
       final List<CarListing2> newListings = response.items;
 

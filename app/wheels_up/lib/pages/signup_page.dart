@@ -8,7 +8,8 @@ import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/services/auth_service.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+  final void Function(bool) notifyAuthChanged;
+  const SignUpPage({super.key, required this.notifyAuthChanged});
 
   @override
   _SignUpPageState createState() => _SignUpPageState();
@@ -115,10 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
           role: selectedRole);
       await _authService.register(payload);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainAppShell()),
-      );
+      widget.notifyAuthChanged(true);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

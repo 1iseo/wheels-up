@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/pages/signup_page.dart';
 import 'package:wheels_up/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final void Function(bool) notifyAuthChanged;
+
+  const LoginPage({super.key, required this.notifyAuthChanged});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -51,10 +54,7 @@ class _LoginPageState extends State<LoginPage> {
         passwordController.text,
       );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainAppShell()),
-      );
+      widget.notifyAuthChanged(true);
     } catch (e) {
       print(e.toString());
       setState(() {
@@ -169,8 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                   const Text("Belum punya akun? "),
                   GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const SignUpPage()));
+                        GoRouter.of(context).go('/signup');
                       },
                       child: const Text(
                         "Sign Up",
