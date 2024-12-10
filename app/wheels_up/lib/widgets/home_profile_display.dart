@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wheels_up/services/auth_service.dart';
 import '../models/user.dart';
-import '../services/user_service.dart';
 
 class HomeProfileDisplay extends StatefulWidget {
   const HomeProfileDisplay({super.key});

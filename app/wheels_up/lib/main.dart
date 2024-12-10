@@ -4,14 +4,15 @@ import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:wheels_up/config/api_config.dart';
 import 'package:wheels_up/pages/main_shell.dart';
+import 'package:wheels_up/providers/user_data_provider.dart';
+import 'package:wheels_up/providers/user_profile_provider.dart';
 import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
+import 'package:wheels_up/services/user_service.dart';
 import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/utils/role_helper.dart';
 
 class MyAuthStore extends AuthStore {}
-
-
 
 void main() {
   runApp(
@@ -31,12 +32,16 @@ void main() {
           create: (context) => CarListingService(
               pb: context.read(), authService: context.read()),
         ),
+        Provider<UserService>(
+          create: (context) =>
+              UserService(pb: context.read(), authService: context.read()),
+        ),
         Provider<RoleHelper>(
           create: (context) => RoleHelper(
             authService: context.read(),
           ),
         ),
-        ChangeNotifierProvider(create: (_) => CurrentAuthState())
+        ChangeNotifierProvider(create: (_) => CurrentAuthState()),
       ],
       child: const AuthWrapper(),
     ),
@@ -89,6 +94,11 @@ class _AuthWrapperState extends State<AuthWrapper> {
               ),
             ),
           )
-        : MainAppShell2();
+        : Provider<UserDataProvider>(
+            create: (context) => UserDataProvider(
+              authService: context.read(),
+            ),
+            child: MainAppShell2(),
+          );
   }
 }

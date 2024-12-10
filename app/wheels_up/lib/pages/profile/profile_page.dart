@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:wheels_up/pages/login_page.dart';
+import 'package:wheels_up/providers/user_profile_provider.dart';
 import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/models/user.dart';
 import 'package:wheels_up/utils/current_auth_state.dart';
@@ -44,7 +46,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _handleLogout() async {
     _authService.logout();
     if (!mounted) return;
-    Provider.of<CurrentAuthState>(context, listen: false).updateAuthState(false);
+    Provider.of<CurrentAuthState>(context, listen: false)
+        .updateAuthState(false);
   }
 
   @override
@@ -63,20 +66,22 @@ class _ProfilePageState extends State<ProfilePage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        _error!,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _loadUser,
-                        child: const Text('Retry'),
-                      ),
-                    ],
+              ? Consumer<ProfileChangeNotifier>(
+                  builder: (context, card, child) => Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          _error!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: _loadUser,
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
                   ),
                 )
               : Center(
@@ -131,6 +136,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           context,
                           title: 'Edit Profile',
                           onTap: () {
+                            print("YO");
+                            GoRouter.of(context).go('/profile/edit');
                             // Add navigation logic
                           },
                         ),

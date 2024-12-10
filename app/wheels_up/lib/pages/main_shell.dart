@@ -5,6 +5,7 @@ import 'package:wheels_up/models/car_listing.dart';
 import 'package:wheels_up/pages/home/home_page_pemilik.dart';
 import 'package:wheels_up/pages/landing_welcome.dart';
 import 'package:wheels_up/pages/login_page.dart';
+import 'package:wheels_up/pages/profile/edit_profile.dart';
 import 'package:wheels_up/pages/profile/profile_page.dart';
 import 'package:wheels_up/pages/signup_page.dart';
 import 'package:wheels_up/pages/view_listing.dart';
@@ -73,6 +74,12 @@ class MainAppShell2 extends StatelessWidget {
             GoRoute(
               path: '/profile',
               builder: (context, state) => const ProfilePage(),
+              routes: <RouteBase>[
+                GoRoute(
+                  path: '/edit',
+                  builder: (context, state) => const EditProfilePage(),
+                ),
+              ],
             ),
           ],
         ),

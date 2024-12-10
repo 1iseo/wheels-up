@@ -102,3 +102,43 @@ class CreateUserRequest {
     };
   }
 }
+
+class UpdateProfileRequest {
+  final String? password;
+  final String? passwordConfirm;
+  final String? oldPassword;
+  final String? username;
+  final String? fullName;
+  final String? email;
+  final bool? emailVisibility;
+  final bool? verified;
+  final String? role;
+
+  UpdateProfileRequest({
+    this.password,
+    this.passwordConfirm,
+    this.oldPassword,
+    this.username,
+    this.fullName,
+    this.email,
+    this.emailVisibility,
+    this.verified,
+    this.role,
+  });
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    
+    if (password != null) data['password'] = password;
+    if (passwordConfirm != null) data['passwordConfirm'] = passwordConfirm;
+    if (oldPassword != null) data['oldPassword'] = oldPassword;
+    if (username != null) data['username'] = username;
+    if (fullName != null) data['fullName'] = fullName;
+    if (email != null) data['email'] = email;
+    if (emailVisibility != null) data['emailVisibility'] = emailVisibility;
+    if (verified != null) data['verified'] = verified;
+    if (role != null) data['role'] = role;
+    
+    return data;
+  }
+}
