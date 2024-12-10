@@ -3,14 +3,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:wheels_up/config/api_config.dart';
 import 'package:wheels_up/models/user.dart';
+import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
-  final void Function(bool) notifyAuthChanged;
-  const SignUpPage({super.key, required this.notifyAuthChanged});
+  const SignUpPage({super.key});
 
   @override
   _SignUpPageState createState() => _SignUpPageState();
@@ -124,7 +124,9 @@ class _SignUpPageState extends State<SignUpPage> {
           role: selectedRole);
       await _authService.register(payload);
 
-      widget.notifyAuthChanged(true);
+      if (!mounted) return;
+      Provider.of<CurrentAuthState>(context, listen: false)
+          .updateAuthState(true);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

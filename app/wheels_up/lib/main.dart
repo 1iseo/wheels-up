@@ -6,9 +6,12 @@ import 'package:wheels_up/config/api_config.dart';
 import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
+import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/utils/role_helper.dart';
 
 class MyAuthStore extends AuthStore {}
+
+
 
 void main() {
   runApp(
@@ -32,7 +35,8 @@ void main() {
           create: (context) => RoleHelper(
             authService: context.read(),
           ),
-        )
+        ),
+        ChangeNotifierProvider(create: (_) => CurrentAuthState())
       ],
       child: const AuthWrapper(),
     ),
@@ -48,43 +52,31 @@ class AuthWrapper extends StatefulWidget {
 
 class _AuthWrapperState extends State<AuthWrapper> {
   late final AuthService2 authService;
-  bool _isAuthenticated = false;
+  late final CurrentAuthState authState;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     authService = Provider.of<AuthService2>(context, listen: false);
+    authState = Provider.of<CurrentAuthState>(context, listen: false);
     loadUser();
   }
 
   loadUser() async {
     try {
       final user = await authService.getCurrentUser();
-      if (user != null) {
-        setState(() {
-          _isAuthenticated = true;
-          _isLoading = false;
-        });
-      } else {
-        setState(() {
-          _isAuthenticated = false;
-          _isLoading = false;
-        });
-      }
+      setState(() {
+        authState.updateAuthState(user != null);
+        _isLoading = false;
+      });
     } catch (e) {
       print("ERROR WHEN LOADING USER: $e");
       setState(() {
-        _isAuthenticated = false;
         _isLoading = false;
+        authState.updateAuthState(false);
       });
     }
-  }
-
-  void _handleAuthChanged(bool isAuthenticated) {
-    setState(() {
-      _isAuthenticated = isAuthenticated;
-    });
   }
 
   @override
@@ -97,8 +89,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
               ),
             ),
           )
-        : MainAppShell2(
-            isAuthenticated: _isAuthenticated,
-            onAuthenticationUpdate: _handleAuthChanged);
+        : MainAppShell2();
   }
 }

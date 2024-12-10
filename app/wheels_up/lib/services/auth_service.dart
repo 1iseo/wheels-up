@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:wheels_up/models/user.dart';
-import 'package:wheels_up/services/pocketbase.dart';
 
 class AuthService {
   final Dio _dio = Dio(BaseOptions(
@@ -144,6 +143,9 @@ class AuthService2 {
         final decoded = jsonDecode(data);
         final user = User2.fromJson(decoded['model'] as Map<String, dynamic>);
         _currentUser = user;
+        RecordModel? record = RecordModel.fromJson(
+            decoded["model"] as Map<String, dynamic>? ?? {});
+        pb.authStore.save(decoded['token'] as String, record);
         return user;
       }
       return null;

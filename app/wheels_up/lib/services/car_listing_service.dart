@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:pocketbase/pocketbase.dart';
-import 'package:wheels_up/services/pocketbase.dart';
 import '../models/car_listing.dart';
 import 'auth_service.dart';
 

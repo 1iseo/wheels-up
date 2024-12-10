@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:wheels_up/widgets/car_listing_card.dart';
-import 'package:wheels_up/pages/view_listing.dart';
 
 class CarListingGrid extends StatelessWidget {
   final List<CarListing2> listings;

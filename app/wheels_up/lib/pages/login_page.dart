@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/pages/signup_page.dart';
@@ -8,9 +9,7 @@ import 'package:wheels_up/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
-  final void Function(bool) notifyAuthChanged;
-
-  const LoginPage({super.key, required this.notifyAuthChanged});
+  const LoginPage({super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -63,7 +62,9 @@ class _LoginPageState extends State<LoginPage> {
         _passwordController.text,
       );
 
-      widget.notifyAuthChanged(true);
+      if (!mounted) return;
+      Provider.of<CurrentAuthState>(context, listen: false)
+          .updateAuthState(true);
     } catch (e) {
       print(e.toString());
       setState(() {

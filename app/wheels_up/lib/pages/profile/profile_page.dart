@@ -4,11 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:wheels_up/pages/login_page.dart';
 import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/models/user.dart';
+import 'package:wheels_up/utils/current_auth_state.dart';
 
 class ProfilePage extends StatefulWidget {
-  final void Function(bool) notifyAuthChanged;
-
-  const ProfilePage({super.key, required this.notifyAuthChanged});
+  const ProfilePage({super.key});
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -45,8 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _handleLogout() async {
     _authService.logout();
     if (!mounted) return;
-
-    widget.notifyAuthChanged(false);
+    Provider.of<CurrentAuthState>(context, listen: false).updateAuthState(false);
   }
 
   @override

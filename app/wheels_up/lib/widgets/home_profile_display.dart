@@ -56,7 +56,7 @@ class _HomeProfileDisplayState extends State<HomeProfileDisplay> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Halo!"),
+                const Text("Halgo!"),
                 if (_isLoading)
                   const SizedBox(
                     width: 80,
