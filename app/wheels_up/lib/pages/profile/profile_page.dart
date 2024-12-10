@@ -54,7 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        toolbarHeight: 80,
+        toolbarHeight: 40,
         title: Container(
           constraints: const BoxConstraints(maxWidth: 100),
           child: SvgPicture.asset('assets/wheelsup_text_logo.svg'),

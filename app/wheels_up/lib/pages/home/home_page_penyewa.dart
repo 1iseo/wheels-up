@@ -126,7 +126,7 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        toolbarHeight: 80,
+        toolbarHeight: 40,
         scrolledUnderElevation: 0.0,
         title: Container(
           constraints: const BoxConstraints(maxWidth: 100),
