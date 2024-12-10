@@ -143,7 +143,7 @@ class CarListingService {
       String id, UpdateCarListingRequest request) async {
     try {
       final body = request.toJson();
-      final files = List<http.MultipartFile>.empty();
+      final files = List<http.MultipartFile>.empty(growable: true);
       // If thumbnail is not null, thumbnailName is also not null
       if (request.thumbnail != null) {
         files.add(
