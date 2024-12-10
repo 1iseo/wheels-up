@@ -41,6 +41,7 @@ class _AddListingPageState extends State<AddListingPage> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to pick image')),
       );
