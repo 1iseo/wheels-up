@@ -64,8 +64,37 @@ class CreateCarListingRequest {
       'pricePerHour': pricePerHour,
       'requirements': json.encode(requirements),
       'posterId': posterId,
-      // thumbnail is skipped because it's handled separately
     };
+  }
+}
+
+class UpdateCarListingRequest {
+  String? title;
+  String? description;
+  String? location;
+  int? pricePerHour;
+  List<String>? requirements;
+  List<int>? thumbnail;
+  String? thumbnailFileName;
+
+  UpdateCarListingRequest({
+    this.title,
+    this.description,
+    this.location,
+    this.pricePerHour,
+    this.requirements,
+    this.thumbnail,
+    this.thumbnailFileName,
+  });
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    if (title != null) data['title'] = title;
+    if (description != null) data['description'] = description;
+    if (location != null) data['location'] = location;
+    if (pricePerHour != null) data['pricePerHour'] = pricePerHour;
+    if (requirements != null) data['requirements'] = json.encode(requirements);
+    return data;
   }
 }
 
@@ -109,12 +138,26 @@ class CarListingService {
   }
 
   Future<CarListing2> updateListing(
-      String id, Map<String, dynamic> data) async {
+      String id, UpdateCarListingRequest request) async {
     try {
+      final body = request.toJson();
+      // If thumbnail is not null, thumbnailName is also not null
+      final files = request.thumbnail != null
+          ? [
+              http.MultipartFile.fromBytes(
+                'thumbnail',
+                request.thumbnail!,
+                filename: request.thumbnailFileName,
+              )
+            ]
+          : [] as List<http.MultipartFile>;
+
       final response = await pb.collection('listings').update(
             id,
-            body: data,
+            body: body,
+            files: files,
           );
+
       return CarListing2.fromJson(response.toJson());
     } catch (e) {
       throw Exception('Failed to update listing: ${e.toString()}');
