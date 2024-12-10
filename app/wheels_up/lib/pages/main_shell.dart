@@ -73,7 +73,7 @@ class MainAppShell2 extends StatelessWidget {
           routes: <GoRoute>[
             GoRoute(
               path: '/profile',
-              builder: (context, state) => const ProfilePage(),
+              builder: (context, state) => const ProfilePage2(),
               routes: <RouteBase>[
                 GoRoute(
                   path: '/edit',

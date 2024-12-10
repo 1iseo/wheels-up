@@ -94,7 +94,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
               ),
             ),
           )
-        : Provider<UserDataProvider>(
+        : ChangeNotifierProvider<UserDataProvider>(
             create: (context) => UserDataProvider(
               authService: context.read(),
             ),

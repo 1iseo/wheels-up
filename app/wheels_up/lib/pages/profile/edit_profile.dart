@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wheels_up/providers/user_data_provider.dart';
 import 'package:wheels_up/providers/user_profile_provider.dart';
 import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
@@ -20,21 +21,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
   bool _isLoading = false;
   late final AuthService2 _authService;
   late final UserService _userService;
-  late final ProfileChangeNotifier _profileChangeNotifier;
- 
+  late final UserDataProvider _userDataProvider;
 
   @override
   void initState() {
     super.initState();
     _authService = Provider.of<AuthService2>(context, listen: false);
     _userService = Provider.of<UserService>(context, listen: false);
-    _profileChangeNotifier =
-        Provider.of<ProfileChangeNotifier>(context, listen: false);
+    _userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
     _loadUserData();
   }
 
   Future<void> _loadUserData() async {
-    final currentUser = await _authService.getCurrentUser();
+    final currentUser = _userDataProvider.user;
     if (currentUser != null) {
       setState(() {
         _nameController.text = currentUser.fullName ?? '';
@@ -58,7 +57,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         username: _usernameController.text,
       );
 
-      await _profileChangeNotifier.updateProfile(request);
+      final newUser = await _userService.updateProfile(request);
+      _userDataProvider.setCurrentUserData(newUser);
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile updated successfully')),
