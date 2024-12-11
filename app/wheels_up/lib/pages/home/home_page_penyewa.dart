@@ -18,7 +18,7 @@ class HomePagePenyewa extends StatefulWidget {
 
 class _HomePagePenyewaState extends State<HomePagePenyewa> {
   final ScrollController _scrollController = ScrollController();
-  final List<CarListing2> _listings = [];
+  final List<CarListingWithPoster> _listings = [];
   late CarListingService _listingService;
   bool _isLoading = false;
   bool _hasMore = true;
@@ -61,8 +61,9 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
           _hasMore = false; // No pagination for search results yet
         });
       } else {
-        final response = await _listingService.getListings(page: _currentPage);
-        final List<CarListing2> newListings = response.items;
+        final response = await _listingService.getListingsWithPoster(page: _currentPage);
+
+        final List<CarListingWithPoster> newListings = response.items;
 
         setState(() {
           if (_currentPage == 1) {

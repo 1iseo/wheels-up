@@ -76,7 +76,7 @@ class CreateUserRequest {
   final String username;
   final String email;
   final String password;
-  final bool? emailVisibility;
+  final bool emailVisibility;
   final String passwordConfirm;
   final String role;
 
@@ -85,7 +85,7 @@ class CreateUserRequest {
     required this.email,
     required this.username,
     required this.password,
-    this.emailVisibility,
+    this.emailVisibility = true,
     required this.passwordConfirm,
     required this.role,
   });

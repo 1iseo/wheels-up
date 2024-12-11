@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:pocketbase/pocketbase.dart';
+import 'package:wheels_up/models/user.dart';
 import '../models/car_listing.dart';
 import 'auth_service.dart';
 
@@ -11,7 +12,7 @@ class ListingResponse {
   final int perPage;
   final int totalPages;
   final int totalItems;
-  final List<CarListing2> items;
+  final List<CarListingWithPoster> items;
 
   ListingResponse({
     required this.page,
@@ -28,7 +29,10 @@ class ListingResponse {
       totalPages: json['totalPages'],
       totalItems: json['totalItems'],
       items: (json['items'] as List)
-          .map((item) => CarListing2.fromJson(item))
+          .map((item) => CarListingWithPoster(
+                listing: CarListing2.fromJson(item),
+                poster: User2.fromJson(item['expand']['posterId']),
+              ))
           .toList(),
     );
   }
@@ -155,7 +159,8 @@ class CarListingService {
         );
       }
 
-      final response = await pb.collection('listings').update(id, body: body, files: files);
+      final response =
+          await pb.collection('listings').update(id, body: body, files: files);
 
       return CarListing2.fromJson(response.toJson());
     } catch (e) {
@@ -174,6 +179,35 @@ class CarListingService {
       await pb.collection('listings').delete(id);
     } catch (e) {
       throw Exception('Failed to delete listing: ${e.toString()}');
+    }
+  }
+
+  Future<CarListingWithPoster> getListingWithPoster(String id) async {
+    try {
+      final response = await pb.collection('listings').getOne(
+            id,
+            expand: 'posterId',
+          );
+
+      final listing = CarListing2.fromJson(response.toJson());
+      final poster = User2.fromJson(response.get('expand.posterId'));
+
+      return CarListingWithPoster(listing: listing, poster: poster);
+    } catch (e) {
+      throw Exception('Failed to fetch listing with poster: $e');
+    }
+  }
+
+  Future<ListingResponse> getListingsWithPoster({int page = 1}) async {
+    try {
+      final response = await pb.collection('listings').getList(
+            page: page,
+            perPage: 5,
+            expand: 'posterId',
+          );
+      return ListingResponse.fromJson(response.toJson());
+    } catch (e) {
+      throw Exception('Failed to fetch listings with posters: $e');
     }
   }
 }

@@ -88,8 +88,8 @@ class MainAppShell2 extends StatelessWidget {
                     GoRoute(
                         path: 'listing',
                         builder: (context, state) {
-                          final listing = state.extra as CarListing2;
-                          return ViewListing(listing: listing);
+                          final listing = state.extra as CarListingWithPoster;
+                          return ViewListing(data: listing);
                         }),
                   ]),
             ],

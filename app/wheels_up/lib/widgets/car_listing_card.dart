@@ -6,17 +6,18 @@ import 'package:wheels_up/models/car_listing.dart';
 import 'package:intl/intl.dart';
 
 class CarListingCard extends StatelessWidget {
-  final CarListing2 listing;
+  final CarListingWithPoster data;
   final VoidCallback? onTap;
 
   const CarListingCard({
     super.key,
-    required this.listing,
+    required this.data,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final listing = data.listing;
     final currencyFormat = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp',

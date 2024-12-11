@@ -1,3 +1,5 @@
+import 'package:wheels_up/models/user.dart';
+
 class CarListing {
   final int id;
   final String name;
@@ -83,4 +85,14 @@ class CarListing2 {
       posterId: json['posterId'],
     );
   }
+}
+
+class CarListingWithPoster {
+  final CarListing2 listing;
+  final User2 poster;
+
+  CarListingWithPoster({
+    required this.listing,
+    required this.poster,
+  });
 }

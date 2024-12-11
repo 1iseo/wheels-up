@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:wheels_up/config/api_config.dart';
 import 'package:wheels_up/models/car_listing.dart';
+import 'package:wheels_up/models/user.dart';
 import 'package:wheels_up/widgets/home_profile_display.dart';
 
 class ImageDisplay extends StatelessWidget {
@@ -46,12 +47,14 @@ class ImageDisplay extends StatelessWidget {
 }
 
 class ViewListing extends StatelessWidget {
-  final CarListing2 listing;
+  final CarListingWithPoster data;
 
-  const ViewListing({super.key, required this.listing});
+  const ViewListing({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
+    final listing = data.listing;
+    final poster = data.poster;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -101,7 +104,7 @@ class ViewListing extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 8),
                             Row(
                               children: [
                                 const Icon(
@@ -130,7 +133,6 @@ class ViewListing extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            const SizedBox(height: 8),
                             Text(
                               NumberFormat.currency(
                                 locale: 'id_ID',
@@ -159,7 +161,7 @@ class ViewListing extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 4),
                             Text(
                               listing.description,
                               style: TextStyle(
@@ -177,11 +179,60 @@ class ViewListing extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 4),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: listing.requirements.map((requirement) => _buildRequirementItem(requirement)).toList(),
+                              children: listing.requirements
+                                  .map((requirement) =>
+                                      _buildRequirementItem(requirement))
+                                  .toList(),
                             ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Owner",
+                              style: TextStyle(
+                                color: Colors.grey[800],
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                              ),
+                              child: Row(
+                                children: [
+                                  const CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        'https://via.placeholder.com/150'), // Replace with user avatar
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        poster.fullName,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        poster.username,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
                           ],
                         ),
                       ),
@@ -198,9 +249,8 @@ class ViewListing extends StatelessWidget {
                       // TODO: Implement booking action
                     },
                     style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.black
-                    ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.black),
                     child: const Text("Sewa Sekarang"),
                   ),
                 ),
@@ -214,7 +264,7 @@ class ViewListing extends StatelessWidget {
 
   Widget _buildRequirementItem(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 4.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

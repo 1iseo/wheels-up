@@ -18,7 +18,7 @@ class HomePagePemilik extends StatefulWidget {
 class _HomePagePemilikState extends State<HomePagePemilik> {
   late final CarListingService _listingService;
   final ScrollController _scrollController = ScrollController();
-  final List<CarListing2> _listings = [];
+  final List<CarListingWithPoster> _listings = [];
   bool _isLoading = false;
   bool _hasMore = true;
   int _currentPage = 1;
@@ -45,9 +45,9 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
     });
 
     try {
-      final response = await _listingService.getListings(page: _currentPage);
+      final response = await _listingService.getListingsWithPoster(page: _currentPage);
       print(response);
-      final List<CarListing2> newListings = response.items;
+      final List<CarListingWithPoster> newListings = response.items;
 
       setState(() {
         _listings.addAll(newListings);
@@ -115,7 +115,7 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
                       final result = await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
-                              EditListingPage(listing: listing),
+                              EditListingPage(listing: listing.listing),
                         ),
                       );
                       if (result == true && mounted) {
