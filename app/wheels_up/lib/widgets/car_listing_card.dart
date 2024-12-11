@@ -38,11 +38,12 @@ class CarListingCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
               child: AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Image.network(
-                  "${ApiConfig.pocketbaseUrl}/api/files/listings/${listing.id}/${listing.thumbnail}",
+                  "${ApiConfig.pocketbaseUrl}/api/files/listings/${listing.id}/${listing.thumbnail}?thumb=800x500",
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
