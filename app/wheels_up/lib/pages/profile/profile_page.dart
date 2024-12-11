@@ -49,6 +49,8 @@ class _ProfilePageState extends State<ProfilePage> {
     if (!mounted) return;
     Provider.of<CurrentAuthState>(context, listen: false)
         .updateAuthState(false);
+
+    GoRouter.of(context).replace('/login');
   }
 
   @override
@@ -294,6 +296,7 @@ class ProfilePage2 extends StatelessWidget {
                                     listen: false);
                                 await authService.logout();
                                 authState.updateAuthState(false);
+                                GoRouter.of(context).replace('/login');
                               },
                               isDestructive: true,
                             ),

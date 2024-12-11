@@ -65,6 +65,9 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) return;
       Provider.of<CurrentAuthState>(context, listen: false)
           .updateAuthState(true);
+
+      if (!mounted) return;
+      GoRouter.of(context).replace('/');
     } catch (e) {
       print(e.toString());
       setState(() {
