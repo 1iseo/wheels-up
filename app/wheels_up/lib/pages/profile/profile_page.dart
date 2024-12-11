@@ -54,8 +54,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         toolbarHeight: 40,
@@ -203,11 +204,12 @@ class ProfilePage2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer<UserDataProvider>(
         builder: (context, provider, child) => Scaffold(
+              backgroundColor: Colors.white,
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
                 elevation: 0,
                 centerTitle: true,
                 toolbarHeight: 40,

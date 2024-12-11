@@ -20,76 +20,36 @@ final GlobalKey<NavigatorState> rootKey =
 class MainAppShell2 extends StatelessWidget {
   MainAppShell2({super.key});
 
-  final GoRouter _router =
-      GoRouter(navigatorKey: rootKey, initialLocation: '/', routes: <RouteBase>[
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        return Scaffold(
-          bottomNavigationBar: NavigationBar(
-            surfaceTintColor: Colors.grey.shade300,
-            backgroundColor: Colors.white,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-            selectedIndex: navigationShell.currentIndex,
-            onDestinationSelected: (int index) =>
-                navigationShell.goBranch(index),
-            destinations: mainNavigationDestinations,
-          ),
-          body: navigationShell,
-        );
-      },
-      branches: <StatefulShellBranch>[
-        StatefulShellBranch(
-          routes: <GoRoute>[
-            GoRoute(
-                path: '/',
-                builder: (context, state) => const HomePage(),
-                routes: <RouteBase>[
-                  GoRoute(
-                      path: '/listing',
-                      builder: (context, state) {
-                        final listing = state.extra as CarListing2;
-                        return ViewListing(listing: listing);
-                      }),
-                ]),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: <GoRoute>[
-            GoRoute(
-              path: '/home2',
-              builder: (context, state) => const HomePagePemilik(),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: <GoRoute>[
-            GoRoute(
-              path: '/home3',
-              builder: (context, state) => const HomePagePenyewa(),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: <GoRoute>[
-            GoRoute(
-              path: '/profile',
-              builder: (context, state) => const ProfilePage2(),
-              routes: <RouteBase>[
-                GoRoute(
-                  path: '/edit',
-                  builder: (context, state) => const EditProfilePage(),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    )
-  ]);
+  final GoRouter _router = GoRouter(
+    navigatorKey: rootKey,
+    initialLocation: '/',
+    redirect: (context, state) {
+      final authState = Provider.of<CurrentAuthState>(context, listen: false);
+      final isAuthenticated = authState.isAuthenticated;
 
-  final GoRouter _guestRouter = GoRouter(
-    initialLocation: '/landing',
+      // Skip redirect for authenticated routes during hot reload
+      if (isAuthenticated && state.matchedLocation != '/') {
+        return null;
+      }
+
+      if (!isAuthenticated && 
+          !state.matchedLocation.startsWith('/landing') &&
+          !state.matchedLocation.startsWith('/login') &&
+          !state.matchedLocation.startsWith('/signup')) {
+        return '/landing';
+      }
+
+      if (isAuthenticated && 
+          (state.matchedLocation.startsWith('/landing') ||
+           state.matchedLocation.startsWith('/login') ||
+           state.matchedLocation.startsWith('/signup'))) {
+        return '/';
+      }
+
+      return null;
+    },
     routes: <RouteBase>[
+      // Guest routes
       GoRoute(
         path: '/landing',
         builder: (context, state) => const LandingWelcome(),
@@ -102,14 +62,75 @@ class MainAppShell2 extends StatelessWidget {
         path: '/signup',
         builder: (context, state) => const SignUpPage(),
       ),
+      // Authenticated routes
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return Scaffold(
+            bottomNavigationBar: NavigationBar(
+              surfaceTintColor: Colors.grey.shade300,
+              backgroundColor: Colors.white,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+              selectedIndex: navigationShell.currentIndex,
+              onDestinationSelected: (int index) =>
+                  navigationShell.goBranch(index),
+              destinations: mainNavigationDestinations,
+            ),
+            body: navigationShell,
+          );
+        },
+        branches: <StatefulShellBranch>[
+          StatefulShellBranch(
+            routes: <GoRoute>[
+              GoRoute(
+                  path: '/',
+                  builder: (context, state) => const HomePage(),
+                  routes: <RouteBase>[
+                    GoRoute(
+                        path: 'listing',
+                        builder: (context, state) {
+                          final listing = state.extra as CarListing2;
+                          return ViewListing(listing: listing);
+                        }),
+                  ]),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: <GoRoute>[
+              GoRoute(
+                path: '/home2',
+                builder: (context, state) => const HomePagePemilik(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: <GoRoute>[
+              GoRoute(
+                path: '/home3',
+                builder: (context, state) => const HomePagePenyewa(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: <GoRoute>[
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfilePage2(),
+                routes: <RouteBase>[
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) => const EditProfilePage(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      )
     ],
   );
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CurrentAuthState>(
-      builder: (context, authState, child) => MaterialApp.router(
-          routerConfig: authState.isAuthenticated ? _router : _guestRouter),
-    );
+    return MaterialApp.router(routerConfig: _router);
   }
 }

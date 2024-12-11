@@ -179,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                   const Text("Belum punya akun? "),
                   GestureDetector(
                       onTap: () {
-                        GoRouter.of(context).go('/signup');
+                        GoRouter.of(context).push('/signup');
                       },
                       child: const Text(
                         "Sign Up",
