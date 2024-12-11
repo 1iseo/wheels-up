@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:wheels_up/config/api_config.dart';
 import 'package:wheels_up/models/car_listing.dart';
@@ -246,7 +247,7 @@ class ViewListing extends StatelessWidget {
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: () {
-                      // TODO: Implement booking action
+                      GoRouter.of(context).go("/rentalform");
                     },
                     style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),

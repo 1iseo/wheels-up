@@ -7,6 +7,7 @@ import 'package:wheels_up/pages/landing_welcome.dart';
 import 'package:wheels_up/pages/login_page.dart';
 import 'package:wheels_up/pages/profile/edit_profile.dart';
 import 'package:wheels_up/pages/profile/profile_page.dart';
+import 'package:wheels_up/pages/rental_form.dart';
 import 'package:wheels_up/pages/signup_page.dart';
 import 'package:wheels_up/pages/view_listing.dart';
 import 'package:wheels_up/utils/current_auth_state.dart';
@@ -90,6 +91,11 @@ class MainAppShell2 extends StatelessWidget {
                         builder: (context, state) {
                           final listing = state.extra as CarListingWithPoster;
                           return ViewListing(data: listing);
+                        }),
+                    GoRoute(
+                        path: 'rentalform',
+                        builder: (context, state) {
+                          return const RentalFormPage();
                         }),
                   ]),
             ],
