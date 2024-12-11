@@ -20,7 +20,7 @@ final GlobalKey<NavigatorState> rootKey =
 class MainAppShell2 extends StatelessWidget {
   MainAppShell2({super.key});
 
-  final GoRouter _router = GoRouter(
+  static final GoRouter _router = GoRouter(
     navigatorKey: rootKey,
     initialLocation: '/',
     redirect: (context, state) {
@@ -32,17 +32,17 @@ class MainAppShell2 extends StatelessWidget {
         return null;
       }
 
-      if (!isAuthenticated && 
+      if (!isAuthenticated &&
           !state.matchedLocation.startsWith('/landing') &&
           !state.matchedLocation.startsWith('/login') &&
           !state.matchedLocation.startsWith('/signup')) {
         return '/landing';
       }
 
-      if (isAuthenticated && 
+      if (isAuthenticated &&
           (state.matchedLocation.startsWith('/landing') ||
-           state.matchedLocation.startsWith('/login') ||
-           state.matchedLocation.startsWith('/signup'))) {
+              state.matchedLocation.startsWith('/login') ||
+              state.matchedLocation.startsWith('/signup'))) {
         return '/';
       }
 
@@ -131,6 +131,10 @@ class MainAppShell2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(routerConfig: _router);
+    return MaterialApp.router(
+      routeInformationParser: _router.routeInformationParser,
+      routeInformationProvider: _router.routeInformationProvider,
+      routerDelegate: _router.routerDelegate,
+    );
   }
 }
