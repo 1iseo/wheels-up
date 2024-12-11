@@ -93,7 +93,7 @@ class LandingWelcome extends StatelessWidget {
                         const SizedBox(height: 24),
                         ElevatedButton(
                           onPressed: () {
-                            GoRouter.of(context).go('/login');
+                            GoRouter.of(context).push('/login');
                           },
                           style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(

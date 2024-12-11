@@ -95,7 +95,8 @@ class MainAppShell2 extends StatelessWidget {
                     GoRoute(
                         path: 'rentalform',
                         builder: (context, state) {
-                          return const RentalFormPage();
+                          final data = state.extra as CarListingWithPoster;
+                          return RentalFormPage(data: data);
                         }),
                   ]),
             ],

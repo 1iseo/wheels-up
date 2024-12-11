@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:wheels_up/models/car_listing.dart';
+import 'package:wheels_up/services/rental_request_service.dart';
 
 class RentalFormPage extends StatefulWidget {
-  const RentalFormPage({super.key});
+  final CarListingWithPoster data;
+  const RentalFormPage({super.key, required this.data});
 
   @override
   State<RentalFormPage> createState() => _RentalFormPageState();
@@ -16,7 +21,7 @@ class _RentalFormPageState extends State<RentalFormPage> {
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _reasonController = TextEditingController();
-
+  bool _termsAccepted = false;
 
   @override
   void dispose() {
@@ -102,14 +107,57 @@ class _RentalFormPageState extends State<RentalFormPage> {
                       hint: 'Apa yang ingin anda lakukan dengan kendaraan ini?',
                       maxLines: 3,
                     ),
-        
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 8),
+                    CheckboxListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                      activeColor: Colors.black,
+                      title: const Text(
+                          'Saya sudah memenuhi syarat yang ditentukan di listing.'),
+                      value: _termsAccepted,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _termsAccepted = value ?? false;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                    const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            // TODO: Handle form submission
+                            if (!_termsAccepted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Anda harus memenuhi persyaratan yang ditentukan di listing.'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            } else {
+                              await Provider.of<RentalRequestService>(context,
+                                      listen: false)
+                                  .createRentalRequest(
+                                CreateRentalRequestRequest(
+                                  listingId: widget.data.listing.id,
+                                  userId: widget.data.poster.id,
+                                  email: _emailController.text,
+                                  noTelepon: _phoneController.text,
+                                  address: _addressController.text,
+                                  reason: _reasonController.text,
+                                  age: int.parse(_ageController.text),
+                                ),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Permintaan penyewaan berhasil dikirim.'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                              GoRouter.of(context).pop();
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -120,7 +168,7 @@ class _RentalFormPageState extends State<RentalFormPage> {
                           backgroundColor: Colors.black,
                         ),
                         child: const Text(
-                          'Pesan',
+                          'Kirim',
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

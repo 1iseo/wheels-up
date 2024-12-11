@@ -139,7 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           title: 'Edit Profile',
                           onTap: () {
                             print("YO");
-                            GoRouter.of(context).go('/profile/edit');
+                            GoRouter.of(context).push('/profile/edit');
                             // Add navigation logic
                           },
                         ),
@@ -280,7 +280,7 @@ class ProfilePage2 extends StatelessWidget {
                               title: 'Edit Profile',
                               onTap: () {
                                 print("YO");
-                                GoRouter.of(context).go('/profile/edit');
+                                GoRouter.of(context).push('/profile/edit');
                                 // Add navigation logic
                               },
                             ),

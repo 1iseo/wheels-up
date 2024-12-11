@@ -164,7 +164,7 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
                     hasMore: _hasMore,
                     scrollController: _scrollController,
                     onCardTap: (listing) {
-                      GoRouter.of(context).go('/listing', extra: listing);
+                      GoRouter.of(context).push('/listing', extra: listing);
                     },
                   ),
                 ),

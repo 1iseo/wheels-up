@@ -8,6 +8,7 @@ import 'package:wheels_up/providers/user_data_provider.dart';
 import 'package:wheels_up/providers/user_profile_provider.dart';
 import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
+import 'package:wheels_up/services/rental_request_service.dart';
 import 'package:wheels_up/services/user_service.dart';
 import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/utils/role_helper.dart';
@@ -35,6 +36,10 @@ void main() {
         Provider<UserService>(
           create: (context) =>
               UserService(pb: context.read(), authService: context.read()),
+        ),
+        Provider<RentalRequestService>(
+          create: (context) => RentalRequestService(
+              pb: context.read(), authService: context.read()),
         ),
         Provider<RoleHelper>(
           create: (context) => RoleHelper(

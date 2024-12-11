@@ -247,7 +247,7 @@ class ViewListing extends StatelessWidget {
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: () {
-                      GoRouter.of(context).go("/rentalform");
+                      GoRouter.of(context).push("/rentalform", extra: data);
                     },
                     style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -383,7 +383,7 @@ class _CarListingWidgetState extends State<CarListingWidget> {
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: widget.listing.requirements.length,
                     itemBuilder: (context, index) {
@@ -393,9 +393,9 @@ class _CarListingWidgetState extends State<CarListingWidget> {
                       );
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text('Lokasi: ${widget.listing.location}'),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {},
                     child: Text('Pesan'),
