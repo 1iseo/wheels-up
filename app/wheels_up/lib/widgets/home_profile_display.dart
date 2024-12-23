@@ -11,7 +11,7 @@ class HomeProfileDisplay extends StatefulWidget {
 }
 
 class _HomeProfileDisplayState extends State<HomeProfileDisplay> {
-  late final AuthService2 _authService;
+  late final AuthService _authService;
   User2? _user;
   bool _isLoading = true;
   String? _error;
@@ -19,7 +19,7 @@ class _HomeProfileDisplayState extends State<HomeProfileDisplay> {
   @override
   void initState() {
     super.initState();
-    _authService = Provider.of<AuthService2>(context, listen: false);
+    _authService = Provider.of<AuthService>(context, listen: false);
     _loadUser();
   }
 

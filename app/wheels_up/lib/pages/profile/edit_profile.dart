@@ -19,14 +19,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   bool _isLoading = false;
-  late final AuthService2 _authService;
+  late final AuthService _authService;
   late final UserService _userService;
   late final UserDataProvider _userDataProvider;
 
   @override
   void initState() {
     super.initState();
-    _authService = Provider.of<AuthService2>(context, listen: false);
+    _authService = Provider.of<AuthService>(context, listen: false);
     _userService = Provider.of<UserService>(context, listen: false);
     _userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
     _loadUserData();

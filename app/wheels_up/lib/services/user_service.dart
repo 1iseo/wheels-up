@@ -4,7 +4,7 @@ import '../services/auth_service.dart';
 
 class UserService {
   late final PocketBase pb;
-  late final AuthService2 authService;
+  late final AuthService authService;
 
   UserService({required this.pb, required this.authService});
 

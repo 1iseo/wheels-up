@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:wheels_up/config/api_config.dart';
 import 'package:wheels_up/models/user.dart';
+import 'package:wheels_up/providers/user_data_provider.dart';
 import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
@@ -26,7 +27,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  late final AuthService2 _authService;
+  late final AuthService _authService;
   final pb = PocketBase(ApiConfig.pocketbaseUrl);
 
   bool _isLoading = false;
@@ -42,7 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   void initState() {
     super.initState();
-    _authService = Provider.of<AuthService2>(context, listen: false);
+    _authService = Provider.of<AuthService>(context, listen: false);
   }
 
   Future<void> _handleSignup() async {
@@ -128,6 +129,10 @@ class _SignUpPageState extends State<SignUpPage> {
       if (!mounted) return;
       Provider.of<CurrentAuthState>(context, listen: false)
           .updateAuthState(true);
+
+      final currentUser = await _authService.getCurrentUser();
+      Provider.of<UserDataProvider>(context, listen: false)
+          .setCurrentUserData(currentUser!);
 
       GoRouter.of(context).replace('/');
     } catch (e) {

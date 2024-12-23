@@ -8,8 +8,10 @@ import 'package:wheels_up/pages/login_page.dart';
 import 'package:wheels_up/pages/profile/edit_profile.dart';
 import 'package:wheels_up/pages/profile/profile_page.dart';
 import 'package:wheels_up/pages/rental_form.dart';
+import 'package:wheels_up/pages/rental_request.dart';
 import 'package:wheels_up/pages/signup_page.dart';
 import 'package:wheels_up/pages/view_listing.dart';
+import 'package:wheels_up/services/rental_request_service.dart';
 import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/widgets/navigation_destinations.dart';
 import 'package:wheels_up/pages/home/home_page.dart';
@@ -101,19 +103,28 @@ class MainAppShell2 extends StatelessWidget {
                   ]),
             ],
           ),
+          // StatefulShellBranch(
+          //   routes: <GoRoute>[
+          //     GoRoute(
+          //       path: '/home2',
+          //       builder: (context, state) => const HomePagePemilik(),
+          //     ),
+          //   ],
+          // ),
           StatefulShellBranch(
             routes: <GoRoute>[
               GoRoute(
-                path: '/home2',
-                builder: (context, state) => const HomePagePemilik(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: <GoRoute>[
-              GoRoute(
-                path: '/home3',
-                builder: (context, state) => const HomePagePenyewa(),
+                path: '/rentalrequests',
+                builder: (context, state) => const RentalRequestListScreen(),
+                routes: <RouteBase>[
+                  GoRoute(
+                    path: 'detail',
+                    builder: (context, state) {
+                      final data = state.extra as RentalRequestWithRelations;
+                      return RentalRequestDetailScreen(rentalRequest: data);
+                    },
+                  ),
+                ],
               ),
             ],
           ),

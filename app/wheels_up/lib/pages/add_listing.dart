@@ -22,7 +22,7 @@ class _AddListingPageState extends State<AddListingPage> {
   final _locationController = TextEditingController();
   final _requirementController = TextEditingController();
   late CarListingService _listingService; //();
-  late AuthService2 _authService; 
+  late AuthService _authService; 
 
   final List<String> _requirements = [];
   File? _thumbnailImage;
@@ -33,7 +33,7 @@ class _AddListingPageState extends State<AddListingPage> {
   void initState() {
     super.initState();
     _listingService = Provider.of<CarListingService>(context, listen: false);
-    _authService = Provider.of<AuthService2>(context, listen: false);
+    _authService = Provider.of<AuthService>(context, listen: false);
   }
 
   Future<void> _pickImage() async {

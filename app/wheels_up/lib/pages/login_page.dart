@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wheels_up/providers/user_data_provider.dart';
 import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
@@ -21,12 +22,15 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  late final AuthService2 _authService;
+  late final AuthService _authService;
+  late final UserDataProvider _userDataProvider;
 
   @override
   void initState() {
     super.initState();
-    _authService = Provider.of<AuthService2>(context, listen: false);
+    _authService = Provider.of<AuthService>(context, listen: false);
+    _userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
+
   }
 
   String? usernameError;
@@ -66,6 +70,8 @@ class _LoginPageState extends State<LoginPage> {
       Provider.of<CurrentAuthState>(context, listen: false)
           .updateAuthState(true);
 
+      final currentUser = await _authService.getCurrentUser();
+      _userDataProvider.setCurrentUserData(currentUser!);
       if (!mounted) return;
       GoRouter.of(context).replace('/');
     } catch (e) {

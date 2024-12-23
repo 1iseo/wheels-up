@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:wheels_up/pages/add_listing.dart';
 import 'package:wheels_up/pages/edit_listing.dart';
+import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/widgets/home_profile_display.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
@@ -17,6 +18,7 @@ class HomePagePemilik extends StatefulWidget {
 
 class _HomePagePemilikState extends State<HomePagePemilik> {
   late final CarListingService _listingService;
+  late final AuthService _authService;
   final ScrollController _scrollController = ScrollController();
   final List<CarListingWithPoster> _listings = [];
   bool _isLoading = false;
@@ -27,6 +29,7 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
   void initState() {
     super.initState();
     _listingService = Provider.of<CarListingService>(context, listen: false);
+    _authService = Provider.of<AuthService>(context, listen: false);
     _loadListings();
     _scrollController.addListener(_onScroll);
   }
@@ -45,7 +48,9 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
     });
 
     try {
-      final response = await _listingService.getListingsWithPoster(page: _currentPage);
+      final currentUser = await _authService.getCurrentUser();
+      final response = await _listingService
+          .getListingsWithPosterFromPoster(currentUser!.id, page: _currentPage);
       print(response);
       final List<CarListingWithPoster> newListings = response.items;
 
@@ -69,7 +74,7 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+        _scrollController.position.maxScrollExtent - 100) {
       _loadListings();
     }
   }
@@ -106,28 +111,39 @@ class _HomePagePemilikState extends State<HomePagePemilik> {
                     });
                     await _loadListings();
                   },
-                  child: CarListingGrid(
-                    listings: _listings,
-                    isLoading: _isLoading,
-                    hasMore: _hasMore,
-                    scrollController: _scrollController,
-                    onCardTap: (listing) async {
-                      final result = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              EditListingPage(listing: listing.listing),
+                  child: _listings.isEmpty && !_isLoading
+                      ? Center(
+                          child: Text(
+                            "Anda belum memiliki listing. Ketik tombol + untuk membuat listing.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 16,
+                            ),
+                          ),
+                        )
+                      : CarListingGrid(
+                          listings: _listings,
+                          isLoading: _isLoading,
+                          hasMore: _hasMore,
+                          scrollController: _scrollController,
+                          onCardTap: (listing) async {
+                            final result = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EditListingPage(listing: listing.listing),
+                              ),
+                            );
+                            if (result == true && mounted) {
+                              setState(() {
+                                _listings.clear();
+                                _currentPage = 1;
+                                _hasMore = true;
+                              });
+                              _loadListings();
+                            }
+                          },
                         ),
-                      );
-                      if (result == true && mounted) {
-                        setState(() {
-                          _listings.clear();
-                          _currentPage = 1;
-                          _hasMore = true;
-                        });
-                        _loadListings();
-                      }
-                    },
-                  ),
                 ),
               ),
             ],

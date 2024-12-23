@@ -38,7 +38,8 @@ class RentalRequestResponse {
 }
 
 class CreateRentalRequestRequest {
-  String userId;
+  String posterUserId;
+  String renterUserId;
   String listingId;
   String email;
   String noTelepon;
@@ -47,7 +48,8 @@ class CreateRentalRequestRequest {
   int age;
 
   CreateRentalRequestRequest({
-    required this.userId,
+    required this.posterUserId,
+    required this.renterUserId,
     required this.listingId,
     required this.email,
     required this.noTelepon,
@@ -58,10 +60,11 @@ class CreateRentalRequestRequest {
 
   Map<String, dynamic> toJson() {
     return {
-      'user': [userId],
+      'userPoster': [posterUserId],
+      'userRenter': [renterUserId],
       'listing': [listingId],
       'email': email,
-      'no_telepon': noTelepon,
+      'noTelepon': noTelepon,
       'address': address,
       'reason': reason,
       'age': age,
@@ -97,7 +100,7 @@ class UpdateRentalRequestRequest {
 
 class RentalRequestService {
   final PocketBase pb;
-  final AuthService2 authService;
+  final AuthService authService;
 
   RentalRequestService({required this.pb, required this.authService});
 
@@ -168,18 +171,38 @@ class RentalRequestService {
     }
   }
 
-  Future<List<RentalRequestWithRelations>> getUserRentalRequests(
+  Future<List<RentalRequestWithRelations>> getUserRentalRequestsSent(
       String userId) async {
     try {
       final response = await pb.collection('rental_requests').getList(
-            filter: 'user = "$userId"',
-            expand: 'user,listing',
+            filter: 'userRenter = "$userId"',
+            expand: 'userRenter,listing',
           );
 
       return (response.items as List)
           .map((item) => RentalRequestWithRelations(
                 rentalRequest: RentalRequest.fromJson(item.toJson()),
-                user: User2.fromJson(item.get('expand.user')),
+                user: User2.fromJson(item.get('expand.userRenter')),
+                listing: CarListing2.fromJson(item.get('expand.listing')),
+              ))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to fetch user rental requests: $e');
+    }
+  }
+
+    Future<List<RentalRequestWithRelations>> getUserRentalRequestsReceived(
+      String userId) async {
+    try {
+      final response = await pb.collection('rental_requests').getList(
+            filter: 'userPoster = "$userId"',
+            expand: 'userRenter,listing',
+          );
+
+      return (response.items as List)
+          .map((item) => RentalRequestWithRelations(
+                rentalRequest: RentalRequest.fromJson(item.toJson()),
+                user: User2.fromJson(item.get('expand.userRenter')),
                 listing: CarListing2.fromJson(item.get('expand.listing')),
               ))
           .toList();
@@ -193,13 +216,13 @@ class RentalRequestService {
     try {
       final response = await pb.collection('rental_requests').getList(
             filter: 'listing = "$listingId"',
-            expand: 'user,listing',
+            expand: 'userRenter,listing',
           );
 
       return (response.items as List)
           .map((item) => RentalRequestWithRelations(
                 rentalRequest: RentalRequest.fromJson(item.toJson()),
-                user: User2.fromJson(item.get('expand.user')),
+                user: User2.fromJson(item.get('expand.userRenter')),
                 listing: CarListing2.fromJson(item.get('expand.listing')),
               ))
           .toList();
@@ -211,8 +234,9 @@ class RentalRequestService {
 
 class RentalRequest {
   String? id;
-  List<String>? user;
-  List<String>? listing;
+  String? posterUserId;
+  String? renterUserId;
+  String? listing;
   String? email;
   String? noTelepon;
   String? address;
@@ -223,7 +247,8 @@ class RentalRequest {
 
   RentalRequest({
     this.id,
-    this.user,
+    this.posterUserId,
+    this.renterUserId,
     this.listing,
     this.email,
     this.noTelepon,
@@ -237,9 +262,9 @@ class RentalRequest {
   factory RentalRequest.fromJson(Map<String, dynamic> json) {
     return RentalRequest(
       id: json['id'],
-      user: json['user'] != null ? List<String>.from(json['user']) : null,
-      listing:
-          json['listing'] != null ? List<String>.from(json['listing']) : null,
+      posterUserId: json['userPoster'],
+      renterUserId: json['userRenter'],
+      listing: json['listing'],
       email: json['email'],
       noTelepon: json['no_telepon'],
       address: json['address'],

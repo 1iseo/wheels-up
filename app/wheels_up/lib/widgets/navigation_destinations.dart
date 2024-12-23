@@ -10,20 +10,12 @@ const List<NavigationDestination> mainNavigationDestinations = [
     label: 'Home',
   ),
   NavigationDestination(
-    icon: Icon(Icons.chat_outlined),
+    icon: Icon(Icons.car_rental_outlined),
     selectedIcon: Icon(
-      Icons.chat,
+      Icons.miscellaneous_services,
       color: Colors.black,
     ),
-    label: "Chat"
-  ),
-  NavigationDestination(
-    icon: Icon(Icons.favorite_outline),
-    selectedIcon: Icon(
-      Icons.favorite,
-      color: Colors.black,
-    ),
-    label: 'Favorite',
+    label: 'Rental Requests',
   ),
   NavigationDestination(
     icon: Icon(Icons.person_outline),

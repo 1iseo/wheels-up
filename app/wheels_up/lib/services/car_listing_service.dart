@@ -103,7 +103,7 @@ class UpdateCarListingRequest {
 
 class CarListingService {
   final PocketBase pb;
-  final AuthService2 authService;
+  final AuthService authService;
 
   CarListingService({required this.pb, required this.authService});
 
@@ -176,7 +176,7 @@ class CarListingService {
       if ((await authService.getCurrentUser())?.id != posterId) {
         throw Exception('Not authorized to delete this listing');
       }
-      await pb.collection('listings').delete(id);
+      var response = await pb.collection('listings').delete(id);
     } catch (e) {
       throw Exception('Failed to delete listing: ${e.toString()}');
     }
@@ -204,6 +204,21 @@ class CarListingService {
             page: page,
             perPage: 5,
             expand: 'posterId',
+          );
+      return ListingResponse.fromJson(response.toJson());
+    } catch (e) {
+      throw Exception('Failed to fetch listings with posters: $e');
+    }
+  }
+
+  Future<ListingResponse> getListingsWithPosterFromPoster(String posterId,
+      {int page = 1}) async {
+    try {
+      final response = await pb.collection('listings').getList(
+            page: page,
+            perPage: 5,
+            expand: 'posterId',
+            filter: 'posterId = "$posterId"',
           );
       return ListingResponse.fromJson(response.toJson());
     } catch (e) {

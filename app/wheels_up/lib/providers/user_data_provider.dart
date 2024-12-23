@@ -4,7 +4,7 @@ import 'package:wheels_up/services/auth_service.dart';
 
 // Only use this provider if we're guaranteed to have a user
 class UserDataProvider extends ChangeNotifier {
-  final AuthService2 authService;
+  final AuthService authService;
   bool _isLoading = true;
   User2? _user;
 

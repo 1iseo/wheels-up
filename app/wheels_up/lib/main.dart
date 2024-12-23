@@ -26,8 +26,8 @@ void main() {
                 .write(key: 'pb_data', value: data);
           })),
         ),
-        Provider<AuthService2>(
-          create: (context) => AuthService2(pb: context.read()),
+        Provider<AuthService>(
+          create: (context) => AuthService(pb: context.read()),
         ),
         Provider<CarListingService>(
           create: (context) => CarListingService(
@@ -61,14 +61,14 @@ class AuthWrapper extends StatefulWidget {
 }
 
 class _AuthWrapperState extends State<AuthWrapper> {
-  late final AuthService2 authService;
+  late final AuthService authService;
   late final CurrentAuthState authState;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    authService = Provider.of<AuthService2>(context, listen: false);
+    authService = Provider.of<AuthService>(context, listen: false);
     authState = Provider.of<CurrentAuthState>(context, listen: false);
     loadUser();
   }

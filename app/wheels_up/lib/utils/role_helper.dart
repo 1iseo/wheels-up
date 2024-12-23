@@ -4,7 +4,7 @@ import '../services/auth_service.dart';
 enum UserRole { pemilik, penyewa, unknown }
 
 class RoleHelper {
-  final AuthService2 authService;
+  final AuthService authService;
 
   RoleHelper({required this.authService});
 

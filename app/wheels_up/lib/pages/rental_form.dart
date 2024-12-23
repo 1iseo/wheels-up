@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:wheels_up/models/car_listing.dart';
+import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/services/rental_request_service.dart';
 
 class RentalFormPage extends StatefulWidget {
@@ -136,12 +137,17 @@ class _RentalFormPageState extends State<RentalFormPage> {
                                 ),
                               );
                             } else {
+                              final currentUser =
+                                  await Provider.of<AuthService>(context,
+                                          listen: false)
+                                      .getCurrentUser();
                               await Provider.of<RentalRequestService>(context,
                                       listen: false)
                                   .createRentalRequest(
                                 CreateRentalRequestRequest(
                                   listingId: widget.data.listing.id,
-                                  userId: widget.data.poster.id,
+                                  posterUserId: widget.data.poster.id,
+                                  renterUserId: currentUser!.id,
                                   email: _emailController.text,
                                   noTelepon: _phoneController.text,
                                   address: _addressController.text,
@@ -149,6 +155,7 @@ class _RentalFormPageState extends State<RentalFormPage> {
                                   age: int.parse(_ageController.text),
                                 ),
                               );
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(

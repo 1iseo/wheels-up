@@ -16,7 +16,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late AuthService2 _authService;
+  late AuthService _authService;
   User2? _user;
   bool _isLoading = true;
   String? _error;
@@ -24,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _authService = Provider.of<AuthService2>(context, listen: false);
+    _authService = Provider.of<AuthService>(context, listen: false);
     _loadUser();
   }
 
@@ -288,7 +288,7 @@ class ProfilePage2 extends StatelessWidget {
                               context,
                               title: 'Log out',
                               onTap: () async {
-                                final authService = Provider.of<AuthService2>(
+                                final authService = Provider.of<AuthService>(
                                     context,
                                     listen: false);
                                 final authState = Provider.of<CurrentAuthState>(
