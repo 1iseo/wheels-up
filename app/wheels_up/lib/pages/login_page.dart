@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:wheels_up/providers/user_data_provider.dart';
+import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/pages/signup_page.dart';
 import 'package:wheels_up/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,10 +17,21 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final _authService = AuthService();
+  final _formKey = GlobalKey<FormState>();
+  final _identifierController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _isLoading = false;
+
+  late final AuthService _authService;
+  late final UserDataProvider _userDataProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = Provider.of<AuthService>(context, listen: false);
+    _userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
+
+  }
 
   String? usernameError;
   String? passwordError;
@@ -28,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    if (usernameController.text.isEmpty) {
+    if (_identifierController.text.isEmpty) {
       setState(() {
         usernameError = 'Please enter username or email';
         _isLoading = false;
@@ -36,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    if (passwordController.text.isEmpty) {
+    if (_passwordController.text.isEmpty) {
       setState(() {
         passwordError = 'Please enter password';
         _isLoading = false;
@@ -46,20 +61,21 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       print("LOGGING IN");
-      final token = await _authService.login(
-        usernameController.text,
-        passwordController.text,
+      await _authService.login(
+        _identifierController.text,
+        _passwordController.text,
       );
 
-      if (token != null) {
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainAppShell()),
-          );
-        }
-      }
+      if (!mounted) return;
+      Provider.of<CurrentAuthState>(context, listen: false)
+          .updateAuthState(true);
+
+      final currentUser = await _authService.getCurrentUser();
+      _userDataProvider.setCurrentUserData(currentUser!);
+      if (!mounted) return;
+      GoRouter.of(context).replace('/');
     } catch (e) {
+      print(e.toString());
       setState(() {
         passwordError = e.toString();
       });
@@ -78,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        toolbarHeight: 80,
+        toolbarHeight: 40,
         title: Container(
             constraints: const BoxConstraints(maxWidth: 100),
             child: SvgPicture.asset('assets/wheelsup_text_logo.svg')),
@@ -113,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 CustomTextField(
-                  controller: usernameController,
+                  controller: _identifierController,
                   hintText: "Username or Email",
                   errorText: usernameError,
                   keyboardType: TextInputType.text,
@@ -121,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
-                  controller: passwordController,
+                  controller: _passwordController,
                   hintText: "Password",
                   errorText: passwordError,
                   obscureText: true,
@@ -136,36 +152,34 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text("Lupa password?", textAlign: TextAlign.start),
                     )),
                 const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                ElevatedButton(
+                  onPressed: _isLoading ? null : _handleLogin,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 48),
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : const Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
                   ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text(
+                          'Login',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
                 const SizedBox(
                   height: 16,
@@ -174,8 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                   const Text("Belum punya akun? "),
                   GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const SignUpPage()));
+                        GoRouter.of(context).push('/signup');
                       },
                       child: const Text(
                         "Sign Up",

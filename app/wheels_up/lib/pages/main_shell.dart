@@ -1,60 +1,158 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:wheels_up/models/car_listing.dart';
+import 'package:wheels_up/pages/home/home_page_pemilik.dart';
+import 'package:wheels_up/pages/landing_welcome.dart';
+import 'package:wheels_up/pages/login_page.dart';
+import 'package:wheels_up/pages/profile/edit_profile.dart';
 import 'package:wheels_up/pages/profile/profile_page.dart';
+import 'package:wheels_up/pages/rental_form.dart';
+import 'package:wheels_up/pages/rental_request.dart';
+import 'package:wheels_up/pages/signup_page.dart';
+import 'package:wheels_up/pages/view_listing.dart';
+import 'package:wheels_up/services/rental_request_service.dart';
+import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/widgets/navigation_destinations.dart';
 import 'package:wheels_up/pages/home/home_page.dart';
 import 'package:wheels_up/pages/home/home_page_penyewa.dart';
 
-// This class handles bottom bar navigation, and also creates nested navigators for each tab / page.
-class MainAppShell extends StatefulWidget {
-  const MainAppShell({super.key});
+final GlobalKey<NavigatorState> rootKey =
+    GlobalKey<NavigatorState>(debugLabel: "root");
 
-  @override
-  _MainAppShellState createState() => _MainAppShellState();
-}
+class MainAppShell2 extends StatelessWidget {
+  MainAppShell2({super.key});
 
-class _MainAppShellState extends State<MainAppShell> {
-  int _currentIndex = 0;
+  static final GoRouter _router = GoRouter(
+    navigatorKey: rootKey,
+    initialLocation: '/',
+    redirect: (context, state) {
+      final authState = Provider.of<CurrentAuthState>(context, listen: false);
+      final isAuthenticated = authState.isAuthenticated;
 
-  final List<GlobalKey<NavigatorState>> _navigatorKeys = [
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-  ];
+      // Skip redirect for authenticated routes during hot reload
+      if (isAuthenticated && state.matchedLocation != '/') {
+        return null;
+      }
 
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
+      if (!isAuthenticated &&
+          !state.matchedLocation.startsWith('/landing') &&
+          !state.matchedLocation.startsWith('/login') &&
+          !state.matchedLocation.startsWith('/signup')) {
+        return '/landing';
+      }
+
+      if (isAuthenticated &&
+          (state.matchedLocation.startsWith('/landing') ||
+              state.matchedLocation.startsWith('/login') ||
+              state.matchedLocation.startsWith('/signup'))) {
+        return '/';
+      }
+
+      return null;
+    },
+    routes: <RouteBase>[
+      // Guest routes
+      GoRoute(
+        path: '/landing',
+        builder: (context, state) => const LandingWelcome(),
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: '/signup',
+        builder: (context, state) => const SignUpPage(),
+      ),
+      // Authenticated routes
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return Scaffold(
+            bottomNavigationBar: NavigationBar(
+              surfaceTintColor: Colors.grey.shade300,
+              backgroundColor: Colors.white,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+              selectedIndex: navigationShell.currentIndex,
+              onDestinationSelected: (int index) =>
+                  navigationShell.goBranch(index),
+              destinations: mainNavigationDestinations,
+            ),
+            body: navigationShell,
+          );
+        },
+        branches: <StatefulShellBranch>[
+          StatefulShellBranch(
+            routes: <GoRoute>[
+              GoRoute(
+                  path: '/',
+                  builder: (context, state) => const HomePage(),
+                  routes: <RouteBase>[
+                    GoRoute(
+                        path: 'listing',
+                        builder: (context, state) {
+                          final listing = state.extra as CarListingWithPoster;
+                          return ViewListing(data: listing);
+                        }),
+                    GoRoute(
+                        path: 'rentalform',
+                        builder: (context, state) {
+                          final data = state.extra as CarListingWithPoster;
+                          return RentalFormPage(data: data);
+                        }),
+                  ]),
+            ],
+          ),
+          // StatefulShellBranch(
+          //   routes: <GoRoute>[
+          //     GoRoute(
+          //       path: '/home2',
+          //       builder: (context, state) => const HomePagePemilik(),
+          //     ),
+          //   ],
+          // ),
+          StatefulShellBranch(
+            routes: <GoRoute>[
+              GoRoute(
+                path: '/rentalrequests',
+                builder: (context, state) => const RentalRequestListScreen(),
+                routes: <RouteBase>[
+                  GoRoute(
+                    path: 'detail',
+                    builder: (context, state) {
+                      final data = state.extra as RentalRequestWithRelations;
+                      return RentalRequestDetailScreen(rentalRequest: data);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: <GoRoute>[
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfilePage2(),
+                routes: <RouteBase>[
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) => const EditProfilePage(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      )
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          _buildNavigator(0, const HomePage()),
-          _buildNavigator(1, const HomePagePenyewa()),
-          _buildNavigator(2, const HomePagePenyewa()),
-          _buildNavigator(3, const ProfilePage())
-        ],
-      ),
-      bottomNavigationBar: NavigationBar(
-        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-        selectedIndex: _currentIndex,
-        onDestinationSelected: _onTabTapped,
-        destinations: mainNavigationDestinations,
-      ),
-    );
-  }
-
-  Widget _buildNavigator(int index, Widget screen) {
-    return Navigator(
-      key: _navigatorKeys[index],
-      onGenerateRoute: (routeSettings) {
-        return MaterialPageRoute(builder: (_) => screen);
-      },
+    return MaterialApp.router(
+      routeInformationParser: _router.routeInformationParser,
+      routeInformationProvider: _router.routeInformationProvider,
+      routerDelegate: _router.routerDelegate,
     );
   }
 }

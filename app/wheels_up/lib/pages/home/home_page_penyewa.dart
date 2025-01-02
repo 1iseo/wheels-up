@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:wheels_up/widgets/home_profile_display.dart';
 import 'package:wheels_up/widgets/search_bar.dart' as sb;
 import 'package:wheels_up/widgets/car_listing_grid.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
 import 'package:wheels_up/utils/debouncer.dart';
-import 'package:wheels_up/pages/view_listing.dart'; // Import ViewListing
 
 class HomePagePenyewa extends StatefulWidget {
   const HomePagePenyewa({super.key});
@@ -16,9 +17,9 @@ class HomePagePenyewa extends StatefulWidget {
 }
 
 class _HomePagePenyewaState extends State<HomePagePenyewa> {
-  final CarListingService _listingService = CarListingService();
   final ScrollController _scrollController = ScrollController();
-  final List<CarListing> _listings = [];
+  final List<CarListingWithPoster> _listings = [];
+  late CarListingService _listingService;
   bool _isLoading = false;
   bool _hasMore = true;
   int _currentPage = 1;
@@ -29,6 +30,7 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
   @override
   void initState() {
     super.initState();
+    _listingService = Provider.of<CarListingService>(context, listen: false);
     _loadListings();
     _scrollController.addListener(_onScroll);
   }
@@ -50,18 +52,18 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
 
     try {
       if (_isSearching) {
-        final searchResults =
-            await _listingService.searchListings(_searchController.text);
+        // final searchResults =
+        // await _listingService.searchListings(_searchController.text);
         setState(() {
           _listings.clear();
-          _listings.addAll(searchResults);
+          // _listings.addAll(searchResults);
           _isLoading = false;
           _hasMore = false; // No pagination for search results yet
         });
       } else {
-        final response = await _listingService.getListings(page: _currentPage);
-        final List<CarListing> newListings = response['listings'];
-        final meta = response['meta'];
+        final response = await _listingService.getListingsWithPoster(page: _currentPage);
+
+        final List<CarListingWithPoster> newListings = response.items;
 
         setState(() {
           if (_currentPage == 1) {
@@ -69,15 +71,15 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
           }
           _listings.addAll(newListings);
           _currentPage++;
-          _hasMore = newListings.length == meta['perPage'];
+          _hasMore = newListings.length == response.perPage;
           _isLoading = false;
         });
       }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
       if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(e.toString())),
         );
@@ -111,7 +113,8 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
     if (isQueryEmpty) {
       _loadListings(); // Clear the results immediately for empty queries
     } else {
-      _debouncer(() => _loadListings()); // Throttle the search for non-empty queries
+      _debouncer(
+          () => _loadListings()); // Throttle the search for non-empty queries
     }
   }
 
@@ -123,8 +126,9 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        toolbarHeight: 80,
+        toolbarHeight: 40,
         scrolledUnderElevation: 0.0,
+        surfaceTintColor: Colors.transparent,
         title: Container(
           constraints: const BoxConstraints(maxWidth: 100),
           child: SvgPicture.asset('assets/wheelsup_text_logo.svg'),
@@ -160,12 +164,7 @@ class _HomePagePenyewaState extends State<HomePagePenyewa> {
                     hasMore: _hasMore,
                     scrollController: _scrollController,
                     onCardTap: (listing) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ViewListing(listing: listing),
-                        ),
-                      );
+                      GoRouter.of(context).push('/listing', extra: listing);
                     },
                   ),
                 ),

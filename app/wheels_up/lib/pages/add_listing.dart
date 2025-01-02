@@ -1,41 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:wheels_up/services/auth_service.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/services/car_listing_service.dart';
-
-class CarListingPayload {
-  final String name;
-  final String description;
-  final double price;
-  final String thumbnail;
-  final List<String> features;
-  final List<String> requirements;
-  final String location;
-
-  CarListingPayload({
-    required this.name,
-    required this.description,
-    required this.price,
-    required this.thumbnail,
-    required this.features,
-    required this.requirements,
-    required this.location,
-  });
-
-  Map<String, dynamic> toJson() => {
-    'name': name,
-    'description': description,
-    'price': price,
-    'thumbnail': thumbnail,
-    'features': features,
-    'requirements': requirements,
-    'location': location,
-  };
-}
 
 class AddListingPage extends StatefulWidget {
   const AddListingPage({super.key});
@@ -50,15 +20,21 @@ class _AddListingPageState extends State<AddListingPage> {
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
   final _locationController = TextEditingController();
-  final _featureController = TextEditingController();
   final _requirementController = TextEditingController();
-  final _listingService = CarListingService();
+  late CarListingService _listingService; //();
+  late AuthService _authService; 
 
-  final List<String> _features = [];
   final List<String> _requirements = [];
   File? _thumbnailImage;
   final ImagePicker _picker = ImagePicker();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _listingService = Provider.of<CarListingService>(context, listen: false);
+    _authService = Provider.of<AuthService>(context, listen: false);
+  }
 
   Future<void> _pickImage() async {
     try {
@@ -74,18 +50,10 @@ class _AddListingPageState extends State<AddListingPage> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to pick image')),
       );
-    }
-  }
-
-  void _addFeature() {
-    if (_featureController.text.isNotEmpty) {
-      setState(() {
-        _features.add(_featureController.text);
-        _featureController.clear();
-      });
     }
   }
 
@@ -96,12 +64,6 @@ class _AddListingPageState extends State<AddListingPage> {
         _requirementController.clear();
       });
     }
-  }
-
-  void _removeFeature(String feature) {
-    setState(() {
-      _features.remove(feature);
-    });
   }
 
   void _removeRequirement(String requirement) {
@@ -120,13 +82,6 @@ class _AddListingPageState extends State<AddListingPage> {
       return;
     }
 
-    if (_features.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please add at least one feature')),
-      );
-      return;
-    }
-
     if (_requirements.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please add at least one requirement')),
@@ -140,19 +95,20 @@ class _AddListingPageState extends State<AddListingPage> {
 
     try {
       final bytes = await _thumbnailImage!.readAsBytes();
-      final base64Image = base64Encode(bytes);
+      final fileName = _thumbnailImage!.path.split('/').last;
 
-      final listingData = {
-        'name': _carNameController.text,
-        'description': _descriptionController.text,
-        'price': double.parse(_priceController.text.replaceAll(RegExp(r'[^0-9]'), '')),
-        'thumbnail': base64Image,
-        'features': _features,
-        'requirements': _requirements,
-        'location': _locationController.text,
-      };
+      final createCarListingData = CreateCarListingRequest(
+        title: _carNameController.text,
+        description: _descriptionController.text,
+        location: _locationController.text,
+        pricePerHour: int.parse(_priceController.text),
+        requirements: _requirements,
+        thumbnail: bytes,
+        thumbnailFileName: fileName,
+        posterId: (await _authService.getCurrentUser())!.id,
+      );
 
-      await _listingService.createListing(listingData);
+      await _listingService.createListing(createCarListingData);
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -178,7 +134,6 @@ class _AddListingPageState extends State<AddListingPage> {
     _carNameController.dispose();
     _priceController.dispose();
     _locationController.dispose();
-    _featureController.dispose();
     _requirementController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -242,37 +197,6 @@ class _AddListingPageState extends State<AddListingPage> {
                   hintText: 'Lokasi',
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 16),
-
-                // Features
-                Row(
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                        controller: _featureController,
-                        hintText: 'Fitur-fitur',
-                        keyboardType: TextInputType.text,
-                        textInputAction: TextInputAction.done,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.add, color: Colors.black),
-                      onPressed: _addFeature,
-                    ),
-                  ],
-                ),
-                SizedBox(height: _features.isEmpty ? 0 : 8),
-                Wrap(
-                  spacing: 8,
-                  children: _features
-                      .map((feature) => Chip(
-                            label: Text(feature),
-                            onDeleted: () => _removeFeature(feature),
-                            deleteIconColor: Colors.black,
-                            backgroundColor: Colors.grey[200],
-                          ))
-                      .toList(),
                 ),
                 const SizedBox(height: 16),
 

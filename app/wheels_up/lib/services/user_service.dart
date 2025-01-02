@@ -1,31 +1,23 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:pocketbase/pocketbase.dart';
 import '../models/user.dart';
-import '../config/api_config.dart';
 import '../services/auth_service.dart';
 
 class UserService {
-  static final AuthService _authService = AuthService();
+  late final PocketBase pb;
+  late final AuthService authService;
 
-  static Future<User> getCurrentUser() async {
-    final token = await _authService.getToken();
-    
-    if (token == null) {
-      throw Exception('Not authenticated');
-    }
+  UserService({required this.pb, required this.authService});
 
-    final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/users/current'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+  Future<User2> updateProfile(UpdateProfileRequest request) async {
+    try {
+      final record = await pb.collection('users').update(
+            pb.authStore.record!.id,
+            body: request.toJson(),
+          );
 
-    if (response.statusCode == 200) {
-      return User.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Failed to load user');
+      return User2.fromJson(record.toJson());
+    } catch (e) {
+      throw Exception('Failed to update profile: $e');
     }
   }
 }

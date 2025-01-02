@@ -1,21 +1,23 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:wheels_up/config/api_config.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:intl/intl.dart';
 
 class CarListingCard extends StatelessWidget {
-  final CarListing listing;
+  final CarListingWithPoster data;
   final VoidCallback? onTap;
 
   const CarListingCard({
     super.key,
-    required this.listing,
+    required this.data,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final listing = data.listing;
     final currencyFormat = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp',
@@ -23,6 +25,8 @@ class CarListingCard extends StatelessWidget {
     );
 
     return Card(
+      surfaceTintColor: Colors.white,
+      color: Colors.white,
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -35,11 +39,12 @@ class CarListingCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
               child: AspectRatio(
                 aspectRatio: 16 / 9,
-                child: Image.memory(
-                  base64Decode(listing.thumbnail),
+                child: Image.network(
+                  "${ApiConfig.pocketbaseUrl}/api/files/listings/${listing.id}/${listing.thumbnail}?thumb=800x500",
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -68,7 +73,7 @@ class CarListingCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "${currencyFormat.format(listing.price)} / jam",
+                    "${currencyFormat.format(listing.pricePerHour)} / jam",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

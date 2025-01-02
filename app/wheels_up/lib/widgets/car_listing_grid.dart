@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:wheels_up/models/car_listing.dart';
 import 'package:wheels_up/widgets/car_listing_card.dart';
-import 'package:wheels_up/pages/view_listing.dart';
 
 class CarListingGrid extends StatelessWidget {
-  final List<CarListing> listings;
+  final List<CarListingWithPoster> listings;
   final bool isLoading;
   final ScrollController scrollController;
-  final Function(CarListing listing) onCardTap;
+  final Function(CarListingWithPoster listing) onCardTap;
   final bool hasMore;
 
   const CarListingGrid({
@@ -42,7 +41,7 @@ class CarListingGrid extends StatelessWidget {
               : const SizedBox();
         }
         return CarListingCard(
-          listing: listings[index],
+          data: listings[index],
           onTap: () => onCardTap(listings[index]),
         );
       },

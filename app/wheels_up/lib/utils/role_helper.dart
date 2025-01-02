@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
-enum UserRole {
-  pemilik,
-  penyewa,
-  unknown
-}
+enum UserRole { pemilik, penyewa, unknown }
 
 class RoleHelper {
-  static final AuthService _authService = AuthService();
+  final AuthService authService;
 
-  static Future<UserRole> getCurrentRole() async {
-    final role = await _authService.getRole();
+  RoleHelper({required this.authService});
+
+  Future<UserRole> getCurrentRole() async {
+    final role = await authService.getRole();
     print(role ?? "no role");
     switch (role?.toLowerCase()) {
       case 'pemilik':
@@ -23,7 +21,7 @@ class RoleHelper {
     }
   }
 
-  static Widget roleBasedBuilder({
+  Widget roleBasedBuilder({
     required Widget Function() pemilikBuilder,
     required Widget Function() penyewaBuilder,
     Widget Function()? unknownBuilder,
@@ -41,8 +39,8 @@ class RoleHelper {
           case UserRole.penyewa:
             return penyewaBuilder();
           default:
-            return unknownBuilder?.call() ?? 
-                   const Center(child: Text('Unknown role'));
+            return unknownBuilder?.call() ??
+                const Center(child: Text('Unknown role'));
         }
       },
     );

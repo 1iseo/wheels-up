@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pocketbase/pocketbase.dart';
+import 'package:wheels_up/config/api_config.dart';
+import 'package:wheels_up/models/user.dart';
+import 'package:wheels_up/providers/user_data_provider.dart';
+import 'package:wheels_up/utils/current_auth_state.dart';
 import 'package:wheels_up/widgets/custom_text_field.dart';
 import 'package:wheels_up/pages/main_shell.dart';
 import 'package:wheels_up/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -12,6 +19,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
@@ -19,7 +27,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  final _authService = AuthService();
+  late final AuthService _authService;
+  final pb = PocketBase(ApiConfig.pocketbaseUrl);
+
   bool _isLoading = false;
 
   String? nameError;
@@ -28,7 +38,13 @@ class _SignUpPageState extends State<SignUpPage> {
   String? passwordError;
   String? confirmPasswordError;
 
-  String selectedRole = 'Penyewa'; // Default value
+  String selectedRole = 'penyewa'; // Default value
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = Provider.of<AuthService>(context, listen: false);
+  }
 
   Future<void> _handleSignup() async {
     setState(() {
@@ -101,20 +117,24 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     try {
-      final token = await _authService.register(
-        email: emailController.text,
-        password: passwordController.text,
-        fullName: nameController.text,
-        username: usernameController.text,
-        role: selectedRole,
-      );
+      final payload = CreateUserRequest(
+          fullName: nameController.text,
+          email: emailController.text,
+          username: usernameController.text,
+          password: passwordController.text,
+          passwordConfirm: confirmPasswordController.text,
+          role: selectedRole);
+      await _authService.register(payload);
 
-      if (token != null && mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainAppShell()),
-        );
-      }
+      if (!mounted) return;
+      Provider.of<CurrentAuthState>(context, listen: false)
+          .updateAuthState(true);
+
+      final currentUser = await _authService.getCurrentUser();
+      Provider.of<UserDataProvider>(context, listen: false)
+          .setCurrentUserData(currentUser!);
+
+      GoRouter.of(context).replace('/');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -135,102 +155,86 @@ class _SignUpPageState extends State<SignUpPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        toolbarHeight: 80,
+        toolbarHeight: 40,
         title: Container(
             constraints: const BoxConstraints(maxWidth: 100),
             child: SvgPicture.asset('assets/wheelsup_text_logo.svg')),
       ),
-      body: Column(
-        children: [
-          const Center(
-            child: Column(
-              children: [
-                Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  "Siap Menikmati Perjalananmu?",
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
-              ],
+      body: SafeArea(
+        child: ListView(
+          children: [
+            const SignUpHeaderText(),
+            const SizedBox(
+              height: 16,
             ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Column(
-              children: [
-                CustomTextField(
-                  controller: nameController,
-                  hintText: "Full Name",
-                  errorText: nameError,
-                ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  controller: emailController,
-                  hintText: "Email",
-                  errorText: emailError,
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  controller: usernameController,
-                  hintText: "Username",
-                  errorText: usernameError,
-                ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  controller: passwordController,
-                  hintText: "Password",
-                  errorText: passwordError,
-                  obscureText: true,
-                ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  controller: confirmPasswordController,
-                  hintText: "Confirm Password",
-                  errorText: confirmPasswordError,
-                  obscureText: true,
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: selectedRole,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Column(
+                children: [
+                  CustomTextField(
+                    controller: nameController,
+                    hintText: "Full Name",
+                    errorText: nameError,
                   ),
-                  items: const [
-                    DropdownMenuItem(value: 'Penyewa', child: Text('Penyewa')),
-                    DropdownMenuItem(value: 'Pemilik', child: Text('Pemilik')),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      selectedRole = value!;
-                    });
-                  },
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: ElevatedButton(
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    controller: emailController,
+                    hintText: "Email",
+                    errorText: emailError,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    controller: usernameController,
+                    hintText: "Username",
+                    errorText: usernameError,
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    controller: passwordController,
+                    hintText: "Password",
+                    errorText: passwordError,
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    controller: confirmPasswordController,
+                    hintText: "Confirm Password",
+                    errorText: confirmPasswordError,
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: selectedRole,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                          value: 'penyewa', child: Text('Penyewa')),
+                      DropdownMenuItem(
+                          value: 'pemilik', child: Text('Pemilik')),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRole = value!;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
                     onPressed: _isLoading ? null : _handleSignup,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 14, horizontal: 48),
+                      backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(15),
                       ),
                     ),
                     child: _isLoading
@@ -252,25 +256,55 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                           ),
                   ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Text("Sudah punya akun? "),
-                  GestureDetector(
-                      onTap: () {
-                        // We can only go to this page from the login page.
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        "Log in",
-                        style: TextStyle(color: Colors.blue),
-                      ))
-                ])
-              ],
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    const Text("Sudah punya akun? "),
+                    GestureDetector(
+                        onTap: () {
+                          // We can only go to this page from the login page.
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          "Log in",
+                          style: TextStyle(color: Colors.blue),
+                        ))
+                  ])
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SignUpHeaderText extends StatelessWidget {
+  const SignUpHeaderText({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Column(
+        children: [
+          Text(
+            "Sign Up",
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w900,
             ),
-          )
+          ),
+          SizedBox(height: 4),
+          Text(
+            "Siap Menikmati Perjalananmu?",
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          ),
         ],
       ),
     );
