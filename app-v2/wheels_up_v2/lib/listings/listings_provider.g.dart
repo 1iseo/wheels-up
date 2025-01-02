@@ -6,7 +6,7 @@ part of 'listings_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$listingsNotifierHash() => r'3105eadd13018aba29c8fdddab91ec00547cba06';
+String _$listingsNotifierHash() => r'59e13d3ebc157b708af5f7cd5d7a0d1dc2f8aa58';
 
 /// See also [ListingsNotifier].
 @ProviderFor(ListingsNotifier)
